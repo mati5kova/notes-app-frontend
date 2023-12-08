@@ -1,0 +1,13 @@
+.signup-login-form-container {
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px 30px;
+    box-shadow: 0 0 15px rgba(128, 128, 128, 0.3);
+}
+
+.signup-login-form {
+    width: 300px;
+}

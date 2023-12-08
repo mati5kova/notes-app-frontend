@@ -1,0 +1,17 @@
+body {
+    overflow-y: scroll;
+}
+h1,/* za rte */
+h2,
+h3,
+h4,
+p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+:root {
+    --toastify-icon-color-success: #228be6 !important;
+    --toastify-color-progress-success: #228be6 !important;
+    --toastify-z-index: 999999 !important;
+}

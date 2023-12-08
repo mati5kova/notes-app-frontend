@@ -1,0 +1,144 @@
+.non-clickable-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    pointer-events: auto;
+    background: rgba(158, 158, 158, 0);
+}
+
+.new-note-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 7px;
+    width: 70%;
+    height: 90%;
+    z-index: 100;
+    text-align: center;
+    box-sizing: border-box;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.05s;
+}
+.new-note-modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+.new-note-modal.maximized {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+}
+
+.new-note-modal > h3 {
+    position: absolute;
+    top: 1rem;
+    left: 1.5rem;
+}
+
+.new-note-modal-form {
+    width: 100%;
+    text-align: left;
+}
+
+.modal-top-right-controls {
+    width: 53px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.controls-icon {
+    background-color: transparent;
+    transition: background-color 0.3s, scale 0.1s;
+    border-radius: 25px;
+}
+
+.controls-icon:hover {
+    background-color: hsl(0, 0%, 78%, 30%);
+    opacity: 1;
+    scale: 0.95;
+}
+
+.new-note-form-basic-input {
+    position: absolute;
+    width: 50%;
+    max-width: 28rem;
+    left: 1.5rem;
+}
+
+.new-note-title {
+    top: 6.7%;
+}
+.new-note-title.editing {
+    top: 6.7%;
+}
+
+.new-note-subject {
+    top: 16.3%;
+}
+.new-note-subject.editing {
+    top: 15%;
+}
+
+.new-note-attachments {
+    top: 26%;
+}
+.new-note-attachments.editing {
+    top: 23.7%;
+}
+
+.mantine-RichTextEditor-root {
+    position: absolute;
+    /* top: 19rem; */
+    bottom: 4rem;
+    left: 1.5rem;
+    border: 1px solid rgb(206, 212, 218);
+    border-radius: 5px;
+    width: calc(100% - 3rem);
+    height: 55%;
+    overflow-y: scroll;
+}
+.rich-editor-toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(206, 212, 218);
+    background-color: white;
+    z-index: 1;
+}
+.toolbar-spacing > button {
+    padding: 4px 4px 0 4px;
+}
+
+.editor-content {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.ProseMirror-focused {
+    outline: none !important;
+    border: none !important;
+}
+
+.new-note-finish {
+    position: absolute;
+    bottom: 0.8rem;
+    right: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    width: 11rem;
+}
+.new-note-cancel:hover {
+    background-color: gray;
+}
