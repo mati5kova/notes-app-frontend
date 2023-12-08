@@ -87,7 +87,7 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                     response = await toast.promise(
                         fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/update-note/${id}`, {
                             method: 'PUT',
-                            headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                             body: formData,
                         }),
                         {
@@ -97,7 +97,7 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                 } else {
                     response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/update-note/${id}`, {
                         method: 'PUT',
-                        headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                        headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                         body: formData,
                     });
                 }

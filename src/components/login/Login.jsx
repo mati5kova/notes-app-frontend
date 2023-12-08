@@ -57,7 +57,7 @@ export default function Login() {
                 handleLoginError();
                 setIsAuthenticated(false);
             } else {
-                localStorage.setItem('jwt-token', parseRes.token);
+                sessionStorage.setItem('jwt-token', parseRes.token);
                 setIsAuthenticated(true);
                 notify();
                 navigate('/', { replace: true });

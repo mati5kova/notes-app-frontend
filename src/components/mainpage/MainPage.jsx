@@ -72,7 +72,7 @@ export default function MainPage() {
         if (activeSearch) return;
         axios({
             method: 'GET',
-            headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
             url: `${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`,
         })
             .then(async (res) => {

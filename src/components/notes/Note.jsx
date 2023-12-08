@@ -21,7 +21,7 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
         try {
             await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/delete-note/${id}`, {
                 method: 'DELETE',
-                headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
             });
             setDisplayedNotes((dNotes) =>
                 dNotes.filter((note) => {

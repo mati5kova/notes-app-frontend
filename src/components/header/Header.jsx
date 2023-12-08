@@ -22,7 +22,7 @@ export default function Header({ setNotes, setActiveSearch }) {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/search-notes?search=${filteredSearch}`, {
                 method: 'GET',
-                headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
             });
             const parseRes = await response.json();
             await setNotes(parseRes);
@@ -49,7 +49,7 @@ export default function Header({ setNotes, setActiveSearch }) {
 
     const handleLogout = () => {
         setIsAuthenticated(false);
-        localStorage.removeItem('jwt-token');
+        sessionStorage.removeItem('jwt-token');
         setNotes([]);
         notify();
     };
@@ -58,7 +58,7 @@ export default function Header({ setNotes, setActiveSearch }) {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/dashboard/info`, {
                 method: 'GET',
-                headers: { 'jwt-token': localStorage.getItem('jwt-token'), 'Content-Type': 'application/json' },
+                headers: { 'jwt-token': sessionStorage.getItem('jwt-token'), 'Content-Type': 'application/json' },
             });
 
             const parseRes = await response.json();

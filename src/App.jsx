@@ -18,7 +18,7 @@ export default function App() {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/is-verify`, {
                 method: 'GET',
-                headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
             });
 
             const parseRes = await response.json();

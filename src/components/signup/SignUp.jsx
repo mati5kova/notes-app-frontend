@@ -61,7 +61,7 @@ export default function SignUp() {
             if (parseRes == 'User alerady exists') {
                 handleSignupError();
             } else {
-                localStorage.setItem('jwt-token', parseRes.token);
+                sessionStorage.setItem('jwt-token', parseRes.token);
                 setIsAuthenticated(true);
                 notify();
                 navigate('/', { replace: true });

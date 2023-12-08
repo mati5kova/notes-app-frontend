@@ -70,7 +70,7 @@ export default function NewNote({ opened, setOpened }) {
                     response = await toast.promise(
                         fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/new-note`, {
                             method: 'POST',
-                            headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                             body: formData,
                         }),
                         {
@@ -80,7 +80,7 @@ export default function NewNote({ opened, setOpened }) {
                 } else {
                     response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/new-note`, {
                         method: 'POST',
-                        headers: { 'jwt-token': localStorage.getItem('jwt-token') },
+                        headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                         body: formData,
                     });
                 }
