@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Group, Paper, PasswordInput, TextInput } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,6 +12,12 @@ export default function Login() {
     const navigate = useNavigate();
     const context = useContext(NotesContext);
     const { isAuthenticated, setIsAuthenticated } = context;
+
+    useEffect(() => {
+        if (isAuthenticated && isAuthenticated === true) {
+            navigate('/', { replace: true });
+        }
+    }, [isAuthenticated]);
 
     const notify = () => {
         toast.success('Successfully logged in', {

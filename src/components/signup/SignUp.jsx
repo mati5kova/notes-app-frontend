@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, Button, Group, PasswordInput, TextInput } from '@mantine/core';
 import { hasLength, isEmail, useForm } from '@mantine/form';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { NotesContext } from '../../App';
@@ -10,6 +10,12 @@ import './signup.css';
 export default function SignUp() {
     const navigate = useNavigate();
     const { isAuthenticated, setIsAuthenticated } = useContext(NotesContext);
+
+    useEffect(() => {
+        if (isAuthenticated && isAuthenticated === true) {
+            navigate('/', { replace: true });
+        }
+    }, [isAuthenticated]);
 
     const notify = () => {
         toast.success('Successfully signed up', {
