@@ -1,5 +1,6 @@
-import { Button } from '@mantine/core';
-import { IconPencilPlus } from '@tabler/icons-react';
+import { Affix, Button, Text, Transition, rem } from '@mantine/core';
+import { useWindowScroll } from '@mantine/hooks';
+import { IconArrowUp, IconPencilPlus } from '@tabler/icons-react';
 import axios from 'axios';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -10,6 +11,7 @@ import Notes from '../notes/Notes.jsx';
 import './mainpage.css';
 
 export default function MainPage() {
+    const [scroll, scrollTo] = useWindowScroll();
     const { isAuthenticated } = useContext(NotesContext);
     const DEFAULT_LIMIT = 12;
     const [opened, setOpened] = useState(false);
@@ -110,6 +112,20 @@ export default function MainPage() {
                 <Notes notes={notes} lastNoteElementRef={lastNoteElementRef} />
                 {loading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
             </div>
+            <Text ta="center">Affix is located at the bottom of the screen, scroll to see it</Text>
+            <Affix position={{ bottom: 20, right: 20 }}>
+                <Transition transition="slide-up" mounted={scroll.y > 0}>
+                    {(transitionStyles) => (
+                        <Button
+                            leftSection={<IconArrowUp style={{ width: rem(16), height: rem(16) }} />}
+                            style={transitionStyles}
+                            onClick={() => scrollTo({ y: 0 })}
+                        >
+                            Scroll to top
+                        </Button>
+                    )}
+                </Transition>
+            </Affix>
         </main>
     );
 }
