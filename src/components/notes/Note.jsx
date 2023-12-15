@@ -1,13 +1,16 @@
 /* eslint-disable react/prop-types */
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { IconEdit, IconShare3, IconTrash } from '@tabler/icons-react';
 import { forwardRef, useEffect, useState } from 'react';
 import EditNote from '../editnote/EditNote.jsx';
+import ShareNote from '../sharenote/ShareNote.jsx';
 import Attachment from './Attachment.jsx';
 import './notes.css';
 
-const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_update, attachments }, ref) => {
+const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email }, ref) => {
+    //0: owner        1: lahko vidi       2:lahko edita
     const [opened, setOpened] = useState(false); //za razširitev nota s klikom
     const [editingNote, setEditingNote] = useState(false); //za editanje nota
+    const [sharingNote, setSharingNote] = useState(false); //za sharanje nota
 
     const handleNoteOpenClick = () => {
         setOpened((opened) => !opened);
@@ -15,6 +18,10 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
 
     const handleNoteEdit = () => {
         setEditingNote((editingNote) => !editingNote);
+    };
+
+    const handleSharingNote = () => {
+        setSharingNote((sharingNote) => !sharingNote);
     };
 
     const handleNoteDelete = async (id) => {
@@ -37,14 +44,15 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
 
     useEffect(() => {
         //da ne moreš scrollat ko editas note
-        editingNote ? (document.body.style.overflowY = 'hidden') : (document.body.style.overflowY = 'scroll');
-    }, [editingNote]);
+        editingNote === true || sharingNote === true ? (document.body.style.overflowY = 'hidden') : (document.body.style.overflowY = 'scroll');
+    }, [editingNote, sharingNote]);
 
     return (
         <>
-            <div className={`dimmed-screen ${editingNote && 'active'}`}></div>
+            {(editingNote || sharingNote) && <div className={`dimmed-screen ${editingNote && 'active'} ${sharingNote && 'active'}`}></div>}
 
-            {editingNote && (
+            {sharingNote && <ShareNote sharingNote={sharingNote} setSharingNote={setSharingNote} id={id} />}
+            {(editing_permission === 0 || editing_permission === 2) && editingNote && (
                 //da ne generiramo edit nota za vse note in da se resetira isDeleted
                 <EditNote
                     editingNote={editingNote}
@@ -56,6 +64,7 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
                     id={id}
                 />
             )}
+
             <div className={`note-wrapper ${opened ? 'opened-note' : 'closed-note'} ${attachments && 'slimmer'}`} tabIndex={0} ref={ref}>
                 <div className="note-info" onClick={handleNoteOpenClick}>
                     <div className="note-title">
@@ -65,10 +74,23 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
                         <small>{last_update}</small>
                     </div>
                 </div>
-                <div className="note-tools">
-                    <IconTrash onClick={() => handleNoteDelete(id)} />
-                    <IconEdit onClick={() => handleNoteEdit(id)} />
+                <div className="sharee-tools-row">
+                    <div className="sharee-user-div">{shared_by_email !== null && `Shared by: ${shared_by_email}`}</div>
+                    {editing_permission === 0 && (
+                        //če je lastnik lahko vse
+                        <div className="note-tools">
+                            <IconTrash onClick={() => handleNoteDelete(id)} />
+                            <IconShare3 onClick={() => handleSharingNote(id)} />
+                            <IconEdit onClick={() => handleNoteEdit(id)} />
+                        </div>
+                    )}
+                    {editing_permission === 2 && (
+                        <div className="note-tools">
+                            <IconEdit onClick={() => handleNoteEdit(id)} />
+                        </div>
+                    )}
                 </div>
+
                 <div className="note-content">
                     <div dangerouslySetInnerHTML={{ __html: content }}></div>
                     {attachments && (

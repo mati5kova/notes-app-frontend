@@ -1,0 +1,91 @@
+.new-note-modal.active.sharing {
+    width: 425px;
+    min-height: 170px;
+    max-height: 500px;
+    height: initial;
+}
+
+.new-note-finish.sharing {
+    width: auto;
+    bottom: 1rem;
+}
+
+.modal-top-right-controls.sharing {
+    width: auto;
+}
+
+.new-note-title.sharing {
+    position: relative;
+    top: 3.5rem;
+}
+
+.new-note-form-basic-input {
+    width: 275px;
+}
+.new-note-submit.sharing {
+    position: absolute;
+    top: 5rem;
+    right: 1.5rem;
+    width: 72.19px;
+}
+
+.allow-edit-checkbox {
+    margin-left: 1.5rem;
+    position: relative;
+    top: 4rem;
+    border: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    border-radius: var(--mantine-radius-md);
+    font-weight: 500;
+    transition: color 100ms ease, background-color 100ms ease, border-color 100ms ease;
+}
+input[type='checkbox'] {
+    cursor: pointer;
+}
+
+.sharing-container {
+    position: relative;
+    top: 5rem;
+}
+
+.shared-legend {
+    text-align: left;
+    border-bottom: 1px solid rgba(172, 172, 172, 0.7);
+    font-weight: 500;
+    margin: 0 1.5rem 0 1.5rem;
+}
+
+.shared-with {
+    /* position: relative;
+    top: 5rem; */
+    /* delujoče */
+    border-bottom: 1px solid rgba(172, 172, 172, 0.7);
+    margin: 0 1.5rem 6.5rem 1.5rem;
+    text-align: left;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    max-height: calc(500px - 160px - 1.6rem - 2rem);
+    padding: 0.25rem 0 0.25rem 0;
+}
+
+.sharee-email {
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.individual-sharee {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.individual-sharee:nth-of-type(1) {
+    margin-top: 0.2rem;
+}
+.trash-icon-sharing {
+    cursor: pointer;
+}
+.trash-icon-sharing:hover {
+    transform: scale(0.98);
+}

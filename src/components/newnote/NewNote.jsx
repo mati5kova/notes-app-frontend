@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { Button, FileInput, TextInput } from '@mantine/core';
-import '@mantine/dates/styles.css';
+import { Button, FileInput, LoadingOverlay, TextInput } from '@mantine/core';
 import { hasLength, isNotEmpty, useForm } from '@mantine/form';
+import { useDisclosure } from '@mantine/hooks';
 import { Link, RichTextEditor } from '@mantine/tiptap';
 import { IconMaximize, IconMinimize, IconX } from '@tabler/icons-react';
 import Highlight from '@tiptap/extension-highlight';
@@ -18,9 +18,9 @@ import './newnote.css';
 const initialContent = '<p>NEW NOTE</p>';
 
 export default function NewNote({ opened, setOpened }) {
+    const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
     const [attached, setAttached] = useState([]);
-    const [finishedUploading, setFinishedUploading] = useState(true);
 
     const notifyError = () => {
         toast.error('Failed to create a note', {
@@ -33,7 +33,6 @@ export default function NewNote({ opened, setOpened }) {
             progress: undefined,
             theme: 'light',
         });
-        setFinishedUploading(true);
     };
 
     const handleSizeChange = () => {
@@ -45,7 +44,6 @@ export default function NewNote({ opened, setOpened }) {
         setOpened(false);
 
         form.reset();
-        //setEditorContent(initialContent);
         editor.commands.setContent(initialContent);
     };
 
@@ -55,7 +53,7 @@ export default function NewNote({ opened, setOpened }) {
 
     const handleNewNoteSubmit = async () => {
         if (form.isValid()) {
-            setFinishedUploading(false);
+            open();
             const formData = new FormData();
             formData.append('title', form.values.title);
             formData.append('subject', form.values.subject);
@@ -63,39 +61,27 @@ export default function NewNote({ opened, setOpened }) {
             form.values.attachments.forEach((file) => {
                 formData.append('attachments', file);
             });
-
             try {
-                let response;
-                if (form.values.attachments.length > 0) {
-                    response = await toast.promise(
-                        fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/new-note`, {
-                            method: 'POST',
-                            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
-                            body: formData,
-                        }),
-                        {
-                            pending: 'Uploading files...',
-                        }
-                    );
-                } else {
-                    response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/new-note`, {
-                        method: 'POST',
-                        headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
-                        body: formData,
-                    });
-                }
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/new-note`, {
+                    method: 'POST',
+                    headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
+                    body: formData,
+                });
+
                 if (response.ok) {
                     const parsed = await response.json();
                     if (parsed === 'File(s) too large') {
+                        close();
                         form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
                     } else if (parsed === 'Finished uploading') {
-                        //setFinishedUploading(true);
                         window.location.reload();
                     } else {
+                        close();
                         console.log('Something went wrong');
                     }
                 }
             } catch (error) {
+                close();
                 console.log(error);
                 notifyError();
             }
@@ -121,7 +107,6 @@ export default function NewNote({ opened, setOpened }) {
         content: initialContent,
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
-            //setEditorContent(html);
             form.setFieldValue('content', html);
         },
         onCreate: () => {
@@ -131,8 +116,13 @@ export default function NewNote({ opened, setOpened }) {
 
     return (
         <>
-            <div className={` ${!finishedUploading && 'non-clickable-overlay'}`}></div>
             <div className={`new-note-modal ${opened && 'active'} ${maximized && 'maximized'}`}>
+                <LoadingOverlay
+                    visible={visible}
+                    zIndex={99999}
+                    overlayProps={{ radius: 'sm', blur: '1' }}
+                    loaderProps={{ children: <div className="dot-flashing"></div> }}
+                />
                 <div className="modal-top-right-controls">
                     {maximized ? (
                         <IconMinimize onClick={handleSizeChange} className="controls-icon" />

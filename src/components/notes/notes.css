@@ -21,6 +21,8 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    /*  */
+    margin-bottom: 25px;
 }
 
 .note-title {
@@ -40,16 +42,17 @@
 
 .note-tools {
     cursor: pointer;
-    margin-top: 25px;
+    /* margin-top: 25px; */
     margin-bottom: 5px;
     display: flex;
     justify-content: flex-start;
     flex-direction: row-reverse;
-    width: 100%;
+    width: auto;
 }
 
-.note-tools > *:nth-child(2) {
-    margin-right: 8px;
+.note-tools > *:nth-child(2),
+.note-tools > *:nth-child(3) {
+    margin-right: 7px;
     transition: transform 0.1s ease-in-out;
 }
 
@@ -59,7 +62,12 @@
 
 .last-update {
     font-size: 16px;
-    padding-right: 2px;
+    padding-top: 5px;
+}
+
+.sharee-tools-row {
+    display: flex;
+    justify-content: space-between;
 }
 
 .note-wrapper.opened-note {

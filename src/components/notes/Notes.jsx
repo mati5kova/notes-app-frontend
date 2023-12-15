@@ -30,6 +30,8 @@ export default function Notes({ notes, lastNoteElementRef }) {
                                     subject={note.subject}
                                     last_update={note.last_update}
                                     attachments={note.attachments ? note.attachments : null}
+                                    editing_permission={note.editing_permission}
+                                    shared_by_email={note.shared_by_email}
                                 ></Note>
                             );
                         } else {
@@ -43,6 +45,8 @@ export default function Notes({ notes, lastNoteElementRef }) {
                                     subject={note.subject}
                                     last_update={note.last_update}
                                     attachments={note.attachments ? note.attachments : null}
+                                    editing_permission={note.editing_permission}
+                                    shared_by_email={note.shared_by_email}
                                 ></Note>
                             );
                         }

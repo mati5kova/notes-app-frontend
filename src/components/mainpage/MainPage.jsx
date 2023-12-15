@@ -1,4 +1,4 @@
-import { Affix, Button, Text, Transition, rem } from '@mantine/core';
+import { Affix, Button, Transition, rem } from '@mantine/core';
 import { useWindowScroll } from '@mantine/hooks';
 import { IconArrowUp, IconPencilPlus } from '@tabler/icons-react';
 import axios from 'axios';
@@ -112,7 +112,6 @@ export default function MainPage() {
                 <Notes notes={notes} lastNoteElementRef={lastNoteElementRef} />
                 {loading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
             </div>
-            <Text ta="center">Affix is located at the bottom of the screen, scroll to see it</Text>
             <Affix position={{ bottom: 20, right: 20 }}>
                 <Transition transition="slide-up" mounted={scroll.y > 0}>
                     {(transitionStyles) => (
