@@ -87,29 +87,30 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                     body: formData,
                 });
 
-                if (response.ok) {
-                    const parsed = await response.json();
-                    if (parsed === 'File(s) too large') {
-                        close();
-                        form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
-                    } else if (parsed === 'Updated successfully') {
-                        window.location.reload();
-                    } else if (parsed === 'Error deleting file(s)') {
-                        close();
-                        notifyError();
-                        console.log('Error deleting file(s)');
-                    } else if (parsed === 'Error uploading file(s)') {
-                        close();
-                        notifyError();
-                        form.setFieldError('attachments', 'Failed to upload file(s)');
-                        console.log('Error uploading file(s)');
-                    } else {
-                        console.log(response);
-                    }
+                const parsed = await response.json();
+                if (parsed === 'File(s) too large') {
+                    close();
+                    form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
+                } else if (parsed === 'Updated successfully') {
+                    window.location.reload();
+                } else if (parsed === 'Error deleting file(s)') {
+                    close();
+                    notifyError();
+                    console.log('Error deleting file(s)');
+                } else if (parsed === 'Error uploading file(s)') {
+                    close();
+                    notifyError();
+                    form.setFieldError('attachments', 'Failed to upload file(s)');
+                    console.log('Error uploading file(s)');
+                } else if (parsed === 'Unauthorized access' || parsed === 'Not authorized') {
+                    notifyError();
+                    close();
+                } else {
+                    console.log(response);
                 }
             } catch (error) {
                 close();
-                console.log(error);
+                console.log(error.message);
                 notifyError();
             }
         }

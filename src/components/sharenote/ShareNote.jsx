@@ -90,23 +90,21 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
                     body: formData,
                 });
 
-                if (response.ok) {
-                    const parsed = await response.json();
-                    if (parsed === 'User does not exist') {
-                        form.setFieldError('recipient', 'User does not exist');
-                    } else if (parsed === 'Note does not exist') {
-                        notifyError();
-                    } else if (parsed === 'Failed to execute request') {
-                        notifyError();
-                    } else if (parsed === 'Successfully shared the note') {
-                        setSharedWith([...sharedWith, { shared_with_email: form.values.recipient, editing_permission: allowEditChecked }]);
-                        form.reset();
-                        setAllowEditChecked(false);
-                    } else if (parsed === 'Already sharing with this user') {
-                        form.setFieldError('recipient', 'Already sharing with this user');
-                    } else {
-                        console.log(parsed);
-                    }
+                const parsed = await response.json();
+                if (parsed === 'User does not exist') {
+                    form.setFieldError('recipient', 'User does not exist');
+                } else if (parsed === 'Note does not exist') {
+                    notifyError();
+                } else if (parsed === 'Failed to execute request') {
+                    notifyError();
+                } else if (parsed === 'Successfully shared the note') {
+                    setSharedWith([...sharedWith, { shared_with_email: form.values.recipient, editing_permission: allowEditChecked }]);
+                    form.reset();
+                    setAllowEditChecked(false);
+                } else if (parsed === 'Already sharing with this user') {
+                    form.setFieldError('recipient', 'Already sharing with this user');
+                } else {
+                    console.log(parsed);
                 }
             } catch (error) {
                 console.log(error.message);
