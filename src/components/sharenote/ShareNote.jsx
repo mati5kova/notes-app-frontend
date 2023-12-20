@@ -22,9 +22,10 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
 
             const parsed = await response.json();
             setSharedWith(parsed);
-            setLoading(false);
         } catch (error) {
             console.log(error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
