@@ -12,6 +12,17 @@ export default function Notes({ notes, lastNoteElementRef }) {
         setDisplayedNotes(notes);
     }, [notes]);
 
+    useEffect(() => {
+        //v local storage da število zapiskov kolikor jih je da vemo za drugič koliko skeletonov prikazat
+        if (notes.length > 12) {
+            localStorage.setItem('numberOfNotes', 12);
+        } else {
+            localStorage.setItem('numberOfNotes', displayedNotes.length);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <>
             {isAuthenticated &&

@@ -3,6 +3,8 @@ import { useWindowScroll } from '@mantine/hooks';
 import { IconArrowUp, IconPencilPlus } from '@tabler/icons-react';
 import axios from 'axios';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { toast } from 'react-toastify';
 import { NotesContext } from '../../App.jsx';
 import Header from '../header/Header.jsx';
@@ -17,10 +19,19 @@ export default function MainPage() {
     const [opened, setOpened] = useState(false);
     const [notes, setNotes] = useState([]);
     const [pageNumber, setPageNumber] = useState(1);
-    const [loading, setLoading] = useState(false);
+    //true na začetku da se useEffect v Notes ne sproži zaradi rendera
+    const [loading, setLoading] = useState(true);
     const [noMoreNotes, setNoMoreNotes] = useState(false);
     //popravi napako da stran fetcha naslednje note ko je rerender zaradi searcha
     const [activeSearch, setActiveSearch] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
+
+    const [skeletonCount, setSkeletonCount] = useState(0); // State for skeleton count
+
+    useEffect(() => {
+        const countFromStorage = parseInt(localStorage.getItem('numberOfNotes')) || 0;
+        setSkeletonCount(countFromStorage);
+    }, []);
 
     const observer = useRef();
     const lastNoteElementRef = useCallback(
@@ -69,9 +80,10 @@ export default function MainPage() {
     }, [opened]);
 
     useEffect(() => {
-        setLoading(true);
         if (noMoreNotes) return;
         if (activeSearch) return;
+        setLoading(true);
+
         axios({
             method: 'GET',
             headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
@@ -86,6 +98,7 @@ export default function MainPage() {
                     setNoMoreNotes(true);
                 }
                 setLoading(false);
+                setInitialLoading(false);
             })
             .catch((error) => {
                 setLoading(false);
@@ -97,20 +110,44 @@ export default function MainPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNumber]);
 
+    const renderSkeletonLoaders = () => {
+        const skeletonLoaders = [];
+        for (let i = 0; i < skeletonCount; i++) {
+            skeletonLoaders.push(
+                <div className="note-wrapper-skeleton">
+                    <Skeleton key={i} style={{ height: '100%', position: 'relative', bottom: '4px' }}></Skeleton>
+                </div>
+            );
+        }
+        /* cel wrapper 
+        <div className="note-wrapper-skeleton-loader">
+            <Skeleton key={i} style={{ height: '100%', position: 'relative', bottom: '4px' }}></Skeleton>
+        </div> 
+        */
+
+        /* samo content 
+        <div className="note-wrapper">
+            <Skeleton key={i} height={30} style={{ marginTop: '1.5rem' }}></Skeleton>
+        </div> 
+        */
+        return skeletonLoaders;
+    };
+
     return (
         <main>
             <div className={`dimmed-screen ${opened && 'active'}`}></div>
             <Header setNotes={setNotes} setActiveSearch={setActiveSearch} />
             <div className="main-container">
-                <div className={`new-button-full-container ${notes.length == 0 && 'center'}`}>
+                <div className={`new-button-full-container`}>
                     <Button rightSection={<IconPencilPlus stroke={2} width={18} />} pr={12} onClick={handleNewNoteClick}>
                         New note
                     </Button>
                 </div>
                 <NewNote opened={opened} setOpened={setOpened} />
+                {initialLoading === false && <Notes notes={notes} lastNoteElementRef={lastNoteElementRef} />}
 
-                <Notes notes={notes} lastNoteElementRef={lastNoteElementRef} />
-                {loading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
+                {loading && !initialLoading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
+                {loading && initialLoading && renderSkeletonLoaders()}
             </div>
             <Affix position={{ bottom: 20, right: 20 }}>
                 <Transition transition="slide-up" mounted={scroll.y > 0}>
