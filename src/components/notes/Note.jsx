@@ -51,7 +51,8 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
         <>
             {(editingNote || sharingNote) && <div className={`dimmed-screen ${editingNote && 'active'} ${sharingNote && 'active'}`}></div>}
 
-            {sharingNote && <ShareNote sharingNote={sharingNote} setSharingNote={setSharingNote} id={id} />}
+            {/* opened je dodan zato da se api klic za sharee-je kliče samo če se note odpre in da že čakajo podatki */}
+            {opened && <ShareNote sharingNote={sharingNote} setSharingNote={setSharingNote} id={id} />}
             {(editing_permission === 0 || editing_permission === 2) && editingNote && (
                 //da ne generiramo edit nota za vse note in da se resetira isDeleted
                 <EditNote

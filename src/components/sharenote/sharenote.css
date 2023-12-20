@@ -67,6 +67,29 @@ input[type='checkbox'] {
     max-height: calc(500px - 160px - 1.6rem - 2rem);
     padding: 0.25rem 0 0.25rem 0;
 }
+.sharee-loading-spinner {
+    margin: 0 1.5rem 6.5rem 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: auto;
+    max-height: calc(500px - 160px - 1.6rem - 2rem);
+    padding: 0rem 0 1.5rem 0;
+}
+.sharee-loader {
+    position: absolute;
+    botom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 30px;
+    height: 30px;
+    border: 4px solid rgba(78, 77, 77, 0.5);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
 
 .sharee-email {
     width: 80%;

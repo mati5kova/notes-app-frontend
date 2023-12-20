@@ -10,26 +10,11 @@ import './sharenote.css';
 export default function ShareNote({ sharingNote, setSharingNote, id }) {
     const [allowEditChecked, setAllowEditChecked] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [sharedWith, setSharedWith] = useState([
-        /*  { email: 'john.doe123@example.com', editingPermission: true },
-        { email: 'susan.smith456@example.com', editingPermission: false },
-        { email: 'mike.jones789@example.com', editingPermission: true },
-        { email: 'emily.wilson321@example.com', editingPermission: false },
-        { email: 'alex.brown654@example.com', editingPermission: true },
-        { email: 'james.bond007@example.com', editingPermission: false },
-        { email: 'lisa.anderson111@example.com', editingPermission: true },
-        { email: 'robert.johnson222@example.com', editingPermission: false },
-        { email: 'olivia.parker333@example.com', editingPermission: true },
-        { email: 'william.smith444@example.com', editingPermission: false },
-        { email: 'hannah.baker555@example.com', editingPermission: true },
-        { email: 'michael.taylor666@example.com', editingPermission: false },
-        { email: 'sophia.green777@example.com', editingPermission: true },
-        { email: 'daniel.hill888@example.com', editingPermission: false },
-        { email: 'ava.campbell999@example.com', editingPermission: true }, */
-    ]);
+    const [sharedWith, setSharedWith] = useState([]);
 
     const fetchShareeData = async () => {
         try {
+            setLoading(true);
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/sharee-data/${id}`, {
                 method: 'GET',
                 headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
@@ -37,6 +22,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
 
             const parsed = await response.json();
             setSharedWith(parsed);
+            setLoading(false);
         } catch (error) {
             console.log(error.message);
         }
@@ -174,34 +160,39 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
                     />
                 </form>
 
-                {sharedWith.length > 0 && sharedWith && (
-                    <div className="sharing-container">
-                        <div className="shared-legend">Users with note access: {sharedWith.length}</div>
-                        <div className="shared-with">
-                            {sharedWith.map((sharee) => {
-                                return (
-                                    <div className="individual-sharee" key={sharee.shared_with_email}>
-                                        <div className="sharee-email">{sharee.shared_with_email}</div>
-                                        <div style={{ position: 'relative', top: '3px' }}>
-                                            {sharee.editing_permission === true ? (
-                                                <Tooltip label="Has editing permissions">
-                                                    <IconEdit size={21}></IconEdit>
-                                                </Tooltip>
-                                            ) : null}
-
-                                            <IconTrash
-                                                size={21}
-                                                style={{ margin: ' 0 4px 0 8px' }}
-                                                onClick={() => handlePermissionRemove(sharee.shared_with_email)}
-                                                className="trash-icon-sharing"
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                <div className="sharing-container">
+                    <div className="sharee-loading-spinner" style={{ display: loading ? 'block' : 'none' }}>
+                        <span className="sharee-loader"></span>
                     </div>
-                )}
+                    {sharedWith.length > 0 && sharedWith && (
+                        <>
+                            <div className="shared-legend">Users with note access: {sharedWith.length}</div>
+                            <div className="shared-with">
+                                {sharedWith.map((sharee) => {
+                                    return (
+                                        <div className="individual-sharee" key={sharee.shared_with_email}>
+                                            <div className="sharee-email">{sharee.shared_with_email}</div>
+                                            <div style={{ position: 'relative', top: '3px' }}>
+                                                {sharee.editing_permission === true ? (
+                                                    <Tooltip label="Has editing permissions">
+                                                        <IconEdit size={21}></IconEdit>
+                                                    </Tooltip>
+                                                ) : null}
+
+                                                <IconTrash
+                                                    size={21}
+                                                    style={{ margin: ' 0 4px 0 8px' }}
+                                                    onClick={() => handlePermissionRemove(sharee.shared_with_email)}
+                                                    className="trash-icon-sharing"
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
         </>
     );
