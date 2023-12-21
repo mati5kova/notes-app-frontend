@@ -114,22 +114,11 @@ export default function MainPage() {
         const skeletonLoaders = [];
         for (let i = 0; i < skeletonCount; i++) {
             skeletonLoaders.push(
-                <div className="note-wrapper-skeleton">
-                    <Skeleton key={i} style={{ height: '100%', position: 'relative', bottom: '4px' }}></Skeleton>
+                <div className="note-wrapper-skeleton" key={i}>
+                    <Skeleton style={{ height: '100%', position: 'relative', bottom: '4px' }}></Skeleton>
                 </div>
             );
         }
-        /* cel wrapper 
-        <div className="note-wrapper-skeleton-loader">
-            <Skeleton key={i} style={{ height: '100%', position: 'relative', bottom: '4px' }}></Skeleton>
-        </div> 
-        */
-
-        /* samo content 
-        <div className="note-wrapper">
-            <Skeleton key={i} height={30} style={{ marginTop: '1.5rem' }}></Skeleton>
-        </div> 
-        */
         return skeletonLoaders;
     };
 
