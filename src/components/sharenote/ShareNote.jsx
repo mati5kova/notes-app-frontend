@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import '../newnote/newnote.css';
 import './sharenote.css';
 
-export default function ShareNote({ sharingNote, setSharingNote, id }) {
+export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared }) {
     const [allowEditChecked, setAllowEditChecked] = useState(false);
     const [loading, setLoading] = useState(false);
     const [sharedWith, setSharedWith] = useState([]);
@@ -22,6 +22,9 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
 
             const parsed = await response.json();
             setSharedWith(parsed);
+            if (parsed.length > 0) {
+                setIsShared(true);
+            }
         } catch (error) {
             console.log(error.message);
         } finally {
@@ -64,7 +67,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
         setSharingNote(false);
     };
 
-    const handleEditNoteSubmit = async () => {
+    const handleShareNoteSubmit = async () => {
         if (form.isValid()) {
             const formData = new FormData();
             formData.append('recipient', form.values.recipient);
@@ -86,6 +89,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
                     notifyError();
                 } else if (parsed === 'Successfully shared the note') {
                     setSharedWith([...sharedWith, { shared_with_email: form.values.recipient, editing_permission: allowEditChecked }]);
+                    setIsShared(true);
                     form.reset();
                     setAllowEditChecked(false);
                 } else if (parsed === 'Already sharing with this user') {
@@ -150,7 +154,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id }) {
                         }
                     />
 
-                    <Button type="submit" className="new-note-submit sharing" onClick={handleEditNoteSubmit}>
+                    <Button type="submit" className="new-note-submit sharing" onClick={handleShareNoteSubmit}>
                         Add
                     </Button>
                     <Checkbox

@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import '../newnote/newnote.css';
 import Attachment from '../notes/Attachment';
 
-export default function EditNote({ editingNote, setEditingNote, title, subject, content, id, attachments }) {
+export default function EditNote({ editingNote, setEditingNote, title, subject, content, id, attachments, socket }) {
     const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
     const [attached, setAttached] = useState([]);
@@ -92,6 +92,7 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                     close();
                     form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
                 } else if (parsed === 'Updated successfully') {
+                    socket.emit('note_updated', { noteId: id });
                     window.location.reload();
                 } else if (parsed === 'Error deleting file(s)') {
                     close();
