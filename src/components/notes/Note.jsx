@@ -13,6 +13,7 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
     const [editingNote, setEditingNote] = useState(false); //za editanje nota
     const [sharingNote, setSharingNote] = useState(false); //true -> edit note je odprt
     const [isShared, setIsShared] = useState(false);
+    const [shouldPulse, setShouldPulse] = useState(false);
 
     const [SlastUpdate, setSlastUpdate] = useState(last_update);
     const [Stitle, setStitle] = useState(title);
@@ -22,6 +23,7 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
 
     const handleNoteOpenClick = () => {
         setOpened((opened) => !opened);
+        setShouldPulse(false);
     };
 
     const handleNoteEdit = () => {
@@ -51,8 +53,11 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
     };
 
     useEffect(() => {
-        //da ne moreš scrollat ko editas note
-        editingNote === true || sharingNote === true ? (document.body.style.overflowY = 'hidden') : (document.body.style.overflowY = 'scroll');
+        // da ne moreš scrollat ko ...
+        document.body.style.overflowY = editingNote || sharingNote ? 'hidden' : 'scroll';
+        return () => {
+            document.body.style.overflowY = 'scroll';
+        };
     }, [editingNote, sharingNote]);
 
     useEffect(() => {
@@ -70,6 +75,12 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
                         setScontent(parsed[0].content);
                         setSlastUpdate(parsed[0].last_update);
                         setSattachments(parsed[0].attachments);
+
+                        if (!opened) {
+                            setShouldPulse(true);
+                        } else {
+                            setShouldPulse(false);
+                        }
                     }
                 } catch (error) {
                     console.log(error.message);
@@ -77,7 +88,7 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isShared]);
+    }, [isShared, opened, shouldPulse]);
 
     return (
         <>
@@ -102,7 +113,7 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
             <div
                 className={`note-wrapper ${opened ? 'opened-note' : 'closed-note'} ${Sattachments && 'slimmer'} ${
                     shared_by_email !== null && 'is-shared-not-mine'
-                }`}
+                } ${shouldPulse && 'pulsing-anim'}`}
                 tabIndex={0}
                 ref={ref}
             >

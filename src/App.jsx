@@ -47,6 +47,7 @@ export default function App() {
                 draggable
                 pauseOnHover={false}
                 theme="light"
+                pauseOnFocusLoss={false}
             />
             <MantineProvider>
                 <Routes>

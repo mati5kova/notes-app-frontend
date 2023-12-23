@@ -11,9 +11,10 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
     const [displayedNotes, setDisplayedNotes] = useState(notes);
 
     const notifySharedWithMe = () => {
-        toast.success('Note was shared with you, refresh the page to see it!', {
-            autoClose: 1000,
+        toast.success('Note was shared with you!', {
+            autoClose: 4000,
             pauseOnHover: true,
+            pauseOnFocusLoss: true,
         });
     };
 
@@ -31,28 +32,37 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
     useEffect(() => {
         if (isAuthenticated === true) {
             socket.connect();
-            socket.on('connect', () => {
+            /*             socket.on('connect', () => {
                 console.log('Socket connected');
             });
             socket.on('disconnect', () => {
                 console.log('Socket disconnected');
-            });
+            }); */
 
             socket.on(`note_shared_with_${userEmail}`, async (noteId) => {
                 try {
                     console.log(noteId);
                     notifySharedWithMe();
+
+                    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/individual-note/${noteId}`, {
+                        method: 'GET',
+                        headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
+                    });
+                    if (response.ok) {
+                        const parsed = await response.json();
+                        setNotes((notes) => [parsed[0], ...notes]);
+                    }
                 } catch (error) {
                     console.log(error.message);
                 }
             });
-            console.log(socket.id);
+        } else {
+            if (socket) {
+                socket.disconnect();
+            }
         }
-        return () => {
-            socket.disconnect();
-        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isAuthenticated, userEmail]);
 
     return (
         <>

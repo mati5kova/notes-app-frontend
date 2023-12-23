@@ -20,6 +20,19 @@
 .note-wrapper.is-shared-not-mine {
     box-shadow: 0 0 5px #228be6;
 }
+.note-wrapper.is-shared-not-mine.pulsing-anim {
+    animation: breatheShadow 2s infinite ease-in-out;
+}
+
+@keyframes breatheShadow {
+    0%,
+    100% {
+        box-shadow: 0 0 5px #228be6;
+    }
+    50% {
+        box-shadow: 0 0 15px #228be6;
+    }
+}
 
 /* če so attachmenti da ni tok empty placa spodej */
 .note-wrapper.slimmer {
