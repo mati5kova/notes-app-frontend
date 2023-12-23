@@ -77,7 +77,7 @@ export default function Header({ setNotes, setActiveSearch }) {
 
     useEffect(() => {
         getUserInfo();
-    }, []);
+    }, [isAuthenticated]);
 
     return (
         <header className={`${scrollDirection === 'down' ? 'down' : 'up'}`}>
