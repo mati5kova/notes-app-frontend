@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import '../newnote/newnote.css';
 import './sharenote.css';
 
-export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared }) {
+export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared, socket }) {
     const [allowEditChecked, setAllowEditChecked] = useState(false);
     const [loading, setLoading] = useState(false);
     const [sharedWith, setSharedWith] = useState([]);
@@ -90,6 +90,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                 } else if (parsed === 'Successfully shared the note') {
                     setSharedWith([...sharedWith, { shared_with_email: form.values.recipient, editing_permission: allowEditChecked }]);
                     setIsShared(true);
+                    socket.emit('note_shared', { user_email: form.values.recipient, noteId: id });
                     form.reset();
                     setAllowEditChecked(false);
                 } else if (parsed === 'Already sharing with this user') {

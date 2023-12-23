@@ -14,7 +14,7 @@ export default function Header({ setNotes, setActiveSearch }) {
     const [userData, setUserData] = useState({});
     const scrollDirection = useScrollDirection();
 
-    const { isAuthenticated, setIsAuthenticated } = useContext(NotesContext);
+    const { isAuthenticated, setIsAuthenticated, setUserEmail } = useContext(NotesContext);
 
     const handleFilterSearch = async () => {
         if (filteredSearch.length === 0) return;
@@ -55,17 +55,22 @@ export default function Header({ setNotes, setActiveSearch }) {
     };
 
     const getUserInfo = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/dashboard/info`, {
-                method: 'GET',
-                headers: { 'jwt-token': sessionStorage.getItem('jwt-token'), 'Content-Type': 'application/json' },
-            });
+        if (isAuthenticated === true) {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/dashboard/info`, {
+                    method: 'GET',
+                    headers: { 'jwt-token': sessionStorage.getItem('jwt-token'), 'Content-Type': 'application/json' },
+                });
 
-            const parseRes = await response.json();
-            setUserData(parseRes);
-        } catch (error) {
-            if (import.meta.env.DEV) {
-                console.log(error.message);
+                if (response.ok) {
+                    const parseRes = await response.json();
+                    setUserData(parseRes);
+                    setUserEmail(parseRes.user_email);
+                }
+            } catch (error) {
+                if (import.meta.env.DEV) {
+                    console.log(error.message);
+                }
             }
         }
     };

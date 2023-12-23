@@ -133,7 +133,9 @@ export default function MainPage() {
                     </Button>
                 </div>
                 <NewNote opened={opened} setOpened={setOpened} />
-                {initialLoading === false && <Notes notes={notes} lastNoteElementRef={lastNoteElementRef} />}
+                {isAuthenticated && isAuthenticated === true && initialLoading === false && (
+                    <Notes notes={notes} setNotes={setNotes} lastNoteElementRef={lastNoteElementRef} />
+                )}
 
                 {loading && !initialLoading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
                 {loading && initialLoading && renderSkeletonLoaders()}

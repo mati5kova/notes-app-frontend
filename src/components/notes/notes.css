@@ -16,6 +16,10 @@
     border-radius: 5px;
     height: 80px;
 }
+/* obroba notov ki so sharani s tabo */
+.note-wrapper.is-shared-not-mine {
+    box-shadow: 0 0 5px #228be6;
+}
 
 /* če so attachmenti da ni tok empty placa spodej */
 .note-wrapper.slimmer {

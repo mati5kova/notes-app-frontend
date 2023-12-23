@@ -13,6 +13,7 @@ export const NotesContext = createContext();
 
 export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [userEmail, setUserEmail] = useState('');
 
     const validAuth = async () => {
         try {
@@ -35,7 +36,7 @@ export default function App() {
     }, []);
 
     return (
-        <NotesContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+        <NotesContext.Provider value={{ isAuthenticated, setIsAuthenticated, userEmail, setUserEmail }}>
             <ToastContainer
                 position="top-right"
                 autoClose={3000}

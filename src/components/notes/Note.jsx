@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
 import { IconEdit, IconShare3, IconTrash } from '@tabler/icons-react';
 import { forwardRef, useEffect, useState } from 'react';
-import io from 'socket.io-client';
+
 import EditNote from '../editnote/EditNote.jsx';
 import ShareNote from '../sharenote/ShareNote.jsx';
 import Attachment from './Attachment.jsx';
 import './notes.css';
-const socket = io.connect(import.meta.env.VITE_API_BASE_URL);
 
-const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email }, ref) => {
+const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email, socket }, ref) => {
     //0: owner        1: lahko vidi       2:lahko edita
     const [opened, setOpened] = useState(false); //za razširitev nota s klikom
     const [editingNote, setEditingNote] = useState(false); //za editanje nota
@@ -39,7 +38,7 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
                 method: 'DELETE',
                 headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
             });
-            setDisplayedNotes((dNotes) =>
+            setNotes((dNotes) =>
                 dNotes.filter((note) => {
                     return note.note_id !== id;
                 })
@@ -85,7 +84,7 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
             {(editingNote || sharingNote) && <div className={`dimmed-screen ${editingNote && 'active'} ${sharingNote && 'active'}`}></div>}
 
             {/* opened je dodan zato da se api klic za sharee-je kliče samo če se note odpre in da že čakajo podatki */}
-            <ShareNote sharingNote={sharingNote} setSharingNote={setSharingNote} id={id} setIsShared={setIsShared} />
+            <ShareNote sharingNote={sharingNote} setSharingNote={setSharingNote} id={id} setIsShared={setIsShared} socket={socket} />
             {(editing_permission === 0 || editing_permission === 2) && editingNote && (
                 //da ne generiramo edit nota za vse note in da se resetira isDeleted
                 <EditNote
@@ -100,7 +99,13 @@ const Note = forwardRef(({ setDisplayedNotes, id, title, content, subject, last_
                 />
             )}
 
-            <div className={`note-wrapper ${opened ? 'opened-note' : 'closed-note'} ${Sattachments && 'slimmer'}`} tabIndex={0} ref={ref}>
+            <div
+                className={`note-wrapper ${opened ? 'opened-note' : 'closed-note'} ${Sattachments && 'slimmer'} ${
+                    shared_by_email !== null && 'is-shared-not-mine'
+                }`}
+                tabIndex={0}
+                ref={ref}
+            >
                 <div className="note-info" onClick={handleNoteOpenClick}>
                     <div className="note-title">
                         <h2>{`${Ssubject !== undefined && Ssubject !== null && Ssubject !== '' ? `[${Ssubject}] ` : ''}${Stitle}`}</h2>
