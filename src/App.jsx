@@ -58,7 +58,6 @@ export default function App() {
         if (isAuthenticated === true) {
             const interval = setInterval(async () => {
                 const response = await validAuth();
-                console.log(response);
                 if (response === 'Not authorized') {
                     notify();
                 }

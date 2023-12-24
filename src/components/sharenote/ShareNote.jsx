@@ -155,15 +155,16 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                         }
                     />
 
-                    <Button type="submit" className="new-note-submit sharing" onClick={handleShareNoteSubmit}>
-                        Add
-                    </Button>
                     <Checkbox
                         checked={allowEditChecked}
                         className={`allow-edit-checkbox ${allowEditChecked === true ? 'active' : ''}`}
                         label="Give edit permissions"
                         onChange={(event) => setAllowEditChecked(event.currentTarget.checked)}
                     />
+
+                    <Button type="submit" className="new-note-submit sharing" onClick={handleShareNoteSubmit}>
+                        Add
+                    </Button>
                 </form>
 
                 <div className="sharing-container">
