@@ -1,8 +1,8 @@
 import { MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { createContext, useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import './App.css';
 import Login from './components/login/Login.jsx';
 import MainPage from './components/mainpage/MainPage.jsx';
@@ -12,8 +12,20 @@ import SignUp from './components/signup/SignUp.jsx';
 export const NotesContext = createContext();
 
 export default function App() {
+    const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userEmail, setUserEmail] = useState('');
+
+    const notify = () => {
+        toast.error('Session ran out, click to login back and continue', {
+            position: 'top-center',
+            autoClose: false,
+            closeOnClick: true,
+            draggable: true,
+            limit: 1,
+            onClick: () => navigate('/login'),
+        });
+    };
 
     const validAuth = async () => {
         try {
@@ -23,7 +35,14 @@ export default function App() {
             });
 
             const parseRes = await response.json();
-            parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+            if (parseRes === true) {
+                toast.dismiss();
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+            }
+
+            return parseRes;
         } catch (error) {
             if (import.meta.env.DEV) {
                 console.log(error.message);
@@ -34,6 +53,22 @@ export default function App() {
     useEffect(() => {
         validAuth();
     }, []);
+
+    useEffect(() => {
+        if (isAuthenticated === true) {
+            const interval = setInterval(async () => {
+                const response = await validAuth();
+                console.log(response);
+                if (response === 'Not authorized') {
+                    notify();
+                }
+            }, 1 * 60 * 200); //30min
+            return () => {
+                clearInterval(interval);
+            };
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthenticated]);
 
     return (
         <NotesContext.Provider value={{ isAuthenticated, setIsAuthenticated, userEmail, setUserEmail }}>

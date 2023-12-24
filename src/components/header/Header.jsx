@@ -77,6 +77,7 @@ export default function Header({ setNotes, setActiveSearch }) {
 
     useEffect(() => {
         getUserInfo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated]);
 
     return (

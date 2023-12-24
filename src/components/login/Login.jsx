@@ -64,6 +64,7 @@ export default function Login() {
                 setIsAuthenticated(false);
             } else {
                 sessionStorage.setItem('jwt-token', parseRes.token);
+                toast.dismiss();
                 setIsAuthenticated(true);
                 notify();
                 navigate('/', { replace: true });
