@@ -71,18 +71,7 @@ export default function App() {
 
     return (
         <NotesContext.Provider value={{ isAuthenticated, setIsAuthenticated, userEmail, setUserEmail }}>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                draggable
-                pauseOnHover={false}
-                theme="light"
-                pauseOnFocusLoss={false}
-            />
+            <ToastContainer />
             <MantineProvider>
                 <Routes>
                     <Route path="/" element={<MainPage />} />
