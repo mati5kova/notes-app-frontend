@@ -91,8 +91,7 @@ export default function MainPage() {
         })
             .then(async (res) => {
                 if (res.data && res.data.length > 0) {
-                    const jointArray = [...notes, ...res.data];
-                    setNotes(Array.from(new Set(jointArray.map(JSON.stringify)), JSON.parse));
+                    setNotes([...notes, ...res.data]);
                 }
                 if (res.data.length != DEFAULT_LIMIT) {
                     setNoMoreNotes(true);
