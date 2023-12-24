@@ -10,9 +10,9 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
     const { isAuthenticated, userEmail } = useContext(NotesContext);
     const [displayedNotes, setDisplayedNotes] = useState(notes);
 
-    const notifySharedWithMe = () => {
-        toast.success('Note was shared with you!', {
-            autoClose: 4000,
+    const notifyShareChange = (msg) => {
+        toast.success(msg, {
+            autoClose: 5000,
             pauseOnHover: true,
             pauseOnFocusLoss: true,
         });
@@ -32,17 +32,10 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
     useEffect(() => {
         if (isAuthenticated === true) {
             socket.connect();
-            /*             socket.on('connect', () => {
-                console.log('Socket connected');
-            });
-            socket.on('disconnect', () => {
-                console.log('Socket disconnected');
-            }); */
 
             socket.on(`note_shared_with_${userEmail}`, async (noteId) => {
                 try {
-                    console.log(noteId);
-                    notifySharedWithMe();
+                    notifyShareChange('Note was shared with you!');
 
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/individual-note/${noteId}`, {
                         method: 'GET',
@@ -52,6 +45,20 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                         const parsed = await response.json();
                         setNotes((notes) => [parsed[0], ...notes]);
                     }
+                } catch (error) {
+                    console.log(error.message);
+                }
+            });
+            
+            socket.on(`share_removed_with_${userEmail}`, async (noteId) => {
+                try {
+                    notifyShareChange('User stopped sharing a note with you');
+
+                    setNotes((nts) =>
+                        nts.filter((note) => {
+                            return note.note_id !== noteId;
+                        })
+                    );
                 } catch (error) {
                     console.log(error.message);
                 }

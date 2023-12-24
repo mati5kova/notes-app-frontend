@@ -87,6 +87,8 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                     notifyError();
                 } else if (parsed === 'Failed to execute request') {
                     notifyError();
+                } else if (parsed === "You can't share note with yourself") {
+                    form.setFieldError('recipient', "You can't share note with yourself");
                 } else if (parsed === 'Successfully shared the note') {
                     setSharedWith([...sharedWith, { shared_with_email: form.values.recipient, editing_permission: allowEditChecked }]);
                     setIsShared(true);
@@ -119,6 +121,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
             if (parsed === 'Failed to remove permissions') {
                 notifyError();
             } else {
+                socket.emit('share_removed', { user_email: email, noteId: id });
                 setSharedWith((element) =>
                     element.filter((s) => {
                         return s.shared_with_email !== email;
