@@ -140,7 +140,7 @@ export default function MainPage() {
                 {loading && !initialLoading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
                 {loading && initialLoading && renderSkeletonLoaders()}
             </div>
-            <Affix position={{ bottom: 20, right: 20 }}>
+            <Affix position={{ bottom: 20, right: 20 }} style={{ zIndex: 50 }}>
                 <Transition transition="slide-up" mounted={scroll.y > 0}>
                     {(transitionStyles) => (
                         <Button

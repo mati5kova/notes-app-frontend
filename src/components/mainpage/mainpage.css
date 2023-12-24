@@ -11,8 +11,9 @@
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.4);
-    z-index: 99;
+    z-index: 100;
     display: none;
+    pointer-events: none;
 }
 .dimmed-screen.active {
     display: block;
