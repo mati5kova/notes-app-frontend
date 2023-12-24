@@ -56,7 +56,7 @@ export default function Attachment({ url, note_id, file_name, file_original_name
             <div className={`attachments ${editingEnv === true ? 'editing' : ''} ${isDeleted === true ? 'deleted' : ''} `}>
                 {editingEnv === true ? (
                     <div className={``}>
-                        <div className="attachment-icons">
+                        <div className="attachment-icons" tabIndex={-1}>
                             <IconXboxX stroke="1.8" size="20" className="attachment-delete-mark" onClick={() => handleAttachmentDelete()} />
                             <FileIcon size="35" stroke="1.2" color="black" />
                         </div>
@@ -64,7 +64,7 @@ export default function Attachment({ url, note_id, file_name, file_original_name
                     </div>
                 ) : (
                     <>
-                        <a target="_blank" href={url} rel="noreferrer" title={file_original_name}>
+                        <a target="_blank" href={url} rel="noreferrer" title={file_original_name} tabIndex={-1}>
                             <FileIcon size="35" stroke="1.2" color="black"></FileIcon>
                         </a>
                         <div className="attachment-name" style={{ position: 'relative', bottom: '0.3rem' }}>
