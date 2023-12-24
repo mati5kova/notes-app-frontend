@@ -76,11 +76,7 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
                         setSlastUpdate(parsed[0].last_update);
                         setSattachments(parsed[0].attachments);
 
-                        if (!opened) {
-                            setShouldPulse(true);
-                        } else {
-                            setShouldPulse(false);
-                        }
+                        setShouldPulse(true);
                     }
                 } catch (error) {
                     console.log(error.message);
@@ -116,6 +112,11 @@ const Note = forwardRef(({ setNotes, id, title, content, subject, last_update, a
                 } ${shouldPulse && 'pulsing-anim'}`}
                 tabIndex={0}
                 ref={ref}
+                onMouseOver={() => {
+                    if (opened) {
+                        setShouldPulse(false);
+                    }
+                }}
             >
                 <div className="note-info" onClick={handleNoteOpenClick}>
                     <div className="note-title">
