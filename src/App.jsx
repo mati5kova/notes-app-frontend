@@ -61,7 +61,7 @@ export default function App() {
                 if (response === 'Not authorized') {
                     notify();
                 }
-            }, 1 * 60 * 200); //30min
+            }, 15 * 60 * 1000); //15min
             return () => {
                 clearInterval(interval);
             };

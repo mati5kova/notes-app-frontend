@@ -43,13 +43,14 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                     });
                     if (response.ok) {
                         const parsed = await response.json();
-                        setNotes((notes) => [parsed[0], ...notes]);
+                        const updatedNote = { ...parsed[0], recentlyShared: true };
+                        setNotes((notes) => [updatedNote, ...notes]);
                     }
                 } catch (error) {
                     console.log(error.message);
                 }
             });
-            
+
             socket.on(`share_removed_with_${userEmail}`, async (noteId) => {
                 try {
                     notifyShareChange('User stopped sharing a note with you');
@@ -92,6 +93,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                                     editing_permission={note.editing_permission}
                                     shared_by_email={note.shared_by_email}
                                     socket={socket}
+                                    recentlyShared={note.recentlyShared || null}
                                 ></Note>
                             );
                         } else {
@@ -108,6 +110,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                                     editing_permission={note.editing_permission}
                                     shared_by_email={note.shared_by_email}
                                     socket={socket}
+                                    recentlyShared={note.recentlyShared || null}
                                 ></Note>
                             );
                         }
