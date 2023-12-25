@@ -8,13 +8,13 @@ import Attachment from './Attachment.jsx';
 import './notes.css';
 
 const Note = forwardRef(
-    ({ setNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email, socket, recentlyShared }, ref) => {
+    ({ setNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email, socket, shouldAnimate }, ref) => {
         //0: owner        1: lahko vidi       2:lahko edita
         const [opened, setOpened] = useState(false); //za razširitev nota s klikom
         const [editingNote, setEditingNote] = useState(false); //za editanje nota
         const [sharingNote, setSharingNote] = useState(false); //true -> edit note je odprt
         const [isShared, setIsShared] = useState(false);
-        const [shouldPulse, setShouldPulse] = useState(recentlyShared || false);
+        const [shouldPulse, setShouldPulse] = useState(shouldAnimate || null);
 
         const [SlastUpdate, setSlastUpdate] = useState(last_update);
         const [Stitle, setStitle] = useState(title);
@@ -112,7 +112,7 @@ const Note = forwardRef(
                 <div
                     className={`note-wrapper ${opened ? 'opened-note' : 'closed-note'} ${Sattachments && 'slimmer'} ${
                         shared_by_email !== null && 'is-shared-not-mine'
-                    } ${shouldPulse && 'pulsing-anim'}`}
+                    } ${shouldPulse === 'always' ? 'pulsing-anim' : shouldPulse === 'temporary' ? 'pulsing-anim-limited' : ''}`}
                     tabIndex={0}
                     ref={ref}
                     onMouseOver={() => {

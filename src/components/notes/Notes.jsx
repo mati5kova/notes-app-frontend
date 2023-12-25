@@ -43,7 +43,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                     });
                     if (response.ok) {
                         const parsed = await response.json();
-                        const updatedNote = { ...parsed[0], recentlyShared: true };
+                        const updatedNote = { ...parsed[0], shouldAnimate: 'always' };
                         setNotes((notes) => [updatedNote, ...notes]);
                     }
                 } catch (error) {
@@ -97,7 +97,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                                     editing_permission={note.editing_permission}
                                     shared_by_email={note.shared_by_email}
                                     socket={socket}
-                                    recentlyShared={note.recentlyShared || null}
+                                    shouldAnimate={note.shouldAnimate || 'never'}
                                 ></Note>
                             );
                         } else {
@@ -114,7 +114,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                                     editing_permission={note.editing_permission}
                                     shared_by_email={note.shared_by_email}
                                     socket={socket}
-                                    recentlyShared={note.recentlyShared || null}
+                                    shouldAnimate={note.shouldAnimate || 'never'}
                                 ></Note>
                             );
                         }

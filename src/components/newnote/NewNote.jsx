@@ -15,9 +15,8 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import './newnote.css';
 
-const initialContent = '<p>NEW NOTE</p>';
-
 export default function NewNote({ opened, setOpened, setNotes }) {
+    const initialContent = '<p>NEW NOTE</p>';
     const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
     const [attached, setAttached] = useState([]);
@@ -98,7 +97,7 @@ export default function NewNote({ opened, setOpened, setNotes }) {
         initialValues: {
             title: '',
             subject: '',
-            content: '',
+            content: initialContent,
             attachments: [],
         },
 
@@ -114,9 +113,6 @@ export default function NewNote({ opened, setOpened, setNotes }) {
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
             form.setFieldValue('content', html);
-        },
-        onCreate: () => {
-            form.setFieldValue('content', initialContent);
         },
     });
 

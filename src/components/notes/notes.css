@@ -23,6 +23,9 @@
 .note-wrapper.is-shared-not-mine.pulsing-anim {
     animation: breatheShadow 2s infinite ease-in-out;
 }
+.note-wrapper.pulsing-anim-limited {
+    animation: breatheShadowGray 1.75s 2 ease-in-out;
+}
 
 @keyframes breatheShadow {
     0%,
@@ -31,6 +34,15 @@
     }
     50% {
         box-shadow: 0 0 15px #228be6;
+    }
+}
+@keyframes breatheShadowGray {
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    }
+    50% {
+        box-shadow: 0 0 22px rgba(0, 0, 0, 0.4);
     }
 }
 
