@@ -20,11 +20,14 @@
 .note-wrapper.is-shared-not-mine {
     box-shadow: 0 0 5px #228be6;
 }
-.note-wrapper.is-shared-not-mine.pulsing-anim {
+.note-wrapper.is-shared-not-mine.pulsing-anim-blue {
     animation: breatheShadow 2s infinite ease-in-out;
 }
-.note-wrapper.pulsing-anim-limited {
+.note-wrapper.pulsing-anim-gray-limited {
     animation: breatheShadowGray 1.75s 2 ease-in-out;
+}
+.note-wrapper.pulsing-anim-gray {
+    animation: breatheShadowGray 1.75s infinite ease-in-out;
 }
 
 @keyframes breatheShadow {

@@ -14,7 +14,8 @@ const Note = forwardRef(
         const [editingNote, setEditingNote] = useState(false); //za editanje nota
         const [sharingNote, setSharingNote] = useState(false); //true -> edit note je odprt
         const [isShared, setIsShared] = useState(false);
-        const [shouldPulse, setShouldPulse] = useState(shouldAnimate || null);
+
+        const [shouldPulse, setShouldPulse] = useState(shouldAnimate);
 
         const [SlastUpdate, setSlastUpdate] = useState(last_update);
         const [Stitle, setStitle] = useState(title);
@@ -77,7 +78,11 @@ const Note = forwardRef(
                             setSlastUpdate(parsed[0].last_update);
                             setSattachments(parsed[0].attachments);
 
-                            setShouldPulse(true);
+                            if (shared_by_email && shared_by_email !== null) {
+                                setShouldPulse('always-blue');
+                            } else {
+                                setShouldPulse('always-gray');
+                            }
                         }
                     } catch (error) {
                         if (import.meta.env.DEV) {
@@ -112,12 +117,20 @@ const Note = forwardRef(
                 <div
                     className={`note-wrapper ${opened ? 'opened-note' : 'closed-note'} ${Sattachments && 'slimmer'} ${
                         shared_by_email !== null && 'is-shared-not-mine'
-                    } ${shouldPulse === 'always' ? 'pulsing-anim' : shouldPulse === 'temporary' ? 'pulsing-anim-limited' : ''}`}
+                    } ${
+                        shouldPulse === 'always-blue'
+                            ? 'pulsing-anim-blue'
+                            : shouldPulse === 'temporary-gray'
+                            ? 'pulsing-anim-gray-limited'
+                            : shouldPulse === 'always-gray'
+                            ? 'pulsing-anim-gray'
+                            : ''
+                    }`}
                     tabIndex={0}
                     ref={ref}
                     onMouseOver={() => {
                         if (opened) {
-                            setShouldPulse(false);
+                            setShouldPulse('never');
                         }
                     }}
                 >

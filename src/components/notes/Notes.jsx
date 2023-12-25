@@ -43,7 +43,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                     });
                     if (response.ok) {
                         const parsed = await response.json();
-                        const updatedNote = { ...parsed[0], shouldAnimate: 'always' };
+                        const updatedNote = { ...parsed[0], shouldAnimate: 'always-blue' };
                         setNotes((notes) => [updatedNote, ...notes]);
                     }
                 } catch (error) {
