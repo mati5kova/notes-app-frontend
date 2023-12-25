@@ -17,7 +17,7 @@ import './newnote.css';
 
 const initialContent = '<p>NEW NOTE</p>';
 
-export default function NewNote({ opened, setOpened }) {
+export default function NewNote({ opened, setOpened, setNotes }) {
     const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
     const [attached, setAttached] = useState([]);
@@ -42,7 +42,7 @@ export default function NewNote({ opened, setOpened }) {
     const formCleanUp = () => {
         setMaximized(false);
         setOpened(false);
-
+        close();
         form.reset();
         editor.commands.setContent(initialContent);
     };
@@ -70,20 +70,26 @@ export default function NewNote({ opened, setOpened }) {
 
                 if (response.ok) {
                     const parsed = await response.json();
-                    if (parsed === 'File(s) too large') {
+                    if (parsed.msg === 'File(s) too large') {
                         close();
                         form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
-                    } else if (parsed === 'Finished uploading') {
-                        window.location.reload();
+                    } else if (parsed.msg === 'Finished uploading') {
+                        setNotes((notes) => [parsed.createdNote, ...notes]);
+                        handleModalClose();
                     } else {
                         close();
-                        console.log('Something went wrong');
+                        notifyError();
+                        if (import.meta.env.DEV) {
+                            console.log('Something went wrong');
+                        }
                     }
                 }
             } catch (error) {
                 close();
-                console.log(error);
                 notifyError();
+                if (import.meta.env.DEV) {
+                    console.log(error.message);
+                }
             }
         }
     };

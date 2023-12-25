@@ -26,7 +26,9 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                 setIsShared(true);
             }
         } catch (error) {
-            console.log(error.message);
+            if (import.meta.env.DEV) {
+                console.log(error.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -98,10 +100,14 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                 } else if (parsed === 'Already sharing with this user') {
                     form.setFieldError('recipient', 'Already sharing with this user');
                 } else {
-                    console.log(parsed);
+                    if (import.meta.env.DEV) {
+                        console.log('Something went wrong');
+                    }
                 }
             } catch (error) {
-                console.log(error.message);
+                if (import.meta.env.DEV) {
+                    console.log(error.message);
+                }
                 notifyError();
             }
         }
@@ -129,7 +135,9 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                 );
             }
         } catch (error) {
-            console.log(error.message);
+            if (import.meta.env.DEV) {
+                console.log(error.message);
+            }
             notifyError();
         }
     };

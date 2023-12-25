@@ -80,7 +80,9 @@ const Note = forwardRef(
                             setShouldPulse(true);
                         }
                     } catch (error) {
-                        console.log(error.message);
+                        if (import.meta.env.DEV) {
+                            console.log(error.message);
+                        }
                     }
                 });
             }

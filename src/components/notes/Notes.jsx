@@ -47,7 +47,9 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                         setNotes((notes) => [updatedNote, ...notes]);
                     }
                 } catch (error) {
-                    console.log(error.message);
+                    if (import.meta.env.DEV) {
+                        console.log(error.message);
+                    }
                 }
             });
 
@@ -61,7 +63,9 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                         })
                     );
                 } catch (error) {
-                    console.log(error.message);
+                    if (import.meta.env.DEV) {
+                        console.log(error.message);
+                    }
                 }
             });
         } else {

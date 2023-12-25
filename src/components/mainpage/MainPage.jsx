@@ -131,7 +131,7 @@ export default function MainPage() {
                         New note
                     </Button>
                 </div>
-                <NewNote opened={opened} setOpened={setOpened} />
+                <NewNote opened={opened} setOpened={setOpened} setNotes={setNotes} />
                 {isAuthenticated && isAuthenticated === true && initialLoading === false && (
                     <Notes notes={notes} setNotes={setNotes} lastNoteElementRef={lastNoteElementRef} />
                 )}
