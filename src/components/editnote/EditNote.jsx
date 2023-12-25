@@ -88,7 +88,8 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                 });
 
                 const parsed = await response.json();
-                if (parsed === 'File(s) too large') {
+                console.log(parsed);
+                if (parsed.msg === 'File(s) too large') {
                     close();
                     form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
                 } else if (parsed === 'Updated successfully') {
@@ -97,21 +98,29 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                 } else if (parsed === 'Error deleting file(s)') {
                     close();
                     notifyError();
-                    console.log('Error deleting file(s)');
+                    if (import.meta.env.DEV) {
+                        console.log('Error deleting file(s)');
+                    }
                 } else if (parsed === 'Error uploading file(s)') {
                     close();
                     notifyError();
                     form.setFieldError('attachments', 'Failed to upload file(s)');
-                    console.log('Error uploading file(s)');
+                    if (import.meta.env.DEV) {
+                        console.log('Error uploading file(s)');
+                    }
                 } else if (parsed === 'Unauthorized access' || parsed === 'Not authorized') {
                     notifyError();
                     close();
                 } else {
-                    console.log(response);
+                    if (import.meta.env.DEV) {
+                        console.log(parsed);
+                    }
                 }
             } catch (error) {
                 close();
-                console.log(error.message);
+                if (import.meta.env.DEV) {
+                    console.log(error.message);
+                }
                 notifyError();
             }
         }
