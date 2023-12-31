@@ -33,7 +33,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
         if (isAuthenticated === true) {
             socket.connect();
 
-            socket.on(`note_shared_with_${userEmail}`, async (noteId) => {
+            const handleNoteShared = async (noteId) => {
                 try {
                     notifyShareChange('Note was shared with you!');
 
@@ -51,9 +51,9 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                         console.log(error.message);
                     }
                 }
-            });
+            };
 
-            socket.on(`share_removed_with_${userEmail}`, async (noteId) => {
+            const handleShareRemoved = async (noteId) => {
                 try {
                     notifyShareChange('User stopped sharing a note with you');
 
@@ -67,11 +67,17 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                         console.log(error.message);
                     }
                 }
-            });
-        } else {
-            if (socket) {
+            };
+            socket.on(`note_shared_with_${userEmail}`, handleNoteShared);
+            socket.on(`share_removed_with_${userEmail}`, handleShareRemoved);
+
+            return () => {
                 socket.disconnect();
-            }
+                socket.off(`note_shared_with_${userEmail}`, handleNoteShared);
+                socket.off(`share_removed_with_${userEmail}`, handleShareRemoved);
+            };
+        } else {
+            socket.disconnect();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated, userEmail]);
