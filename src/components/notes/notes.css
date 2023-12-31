@@ -139,11 +139,6 @@
     margin-right: 3rem;
 }
 
-/* .attachments.editing > div.deleted {
-    visibility: hidden;
-    display: none;
-} */
-
 .attachments.editing.deleted {
     display: none;
 }

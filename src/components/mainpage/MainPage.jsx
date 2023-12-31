@@ -126,7 +126,7 @@ export default function MainPage() {
             <div className={`dimmed-screen ${opened && 'active'}`}></div>
             <Header setNotes={setNotes} setActiveSearch={setActiveSearch} />
             <div className="main-container">
-                <div className={`new-button-full-container`}>
+                <div className={`new-button-full-container ${notes.length === 0 && 'center'}`}>
                     <Button rightSection={<IconPencilPlus stroke={2} width={18} />} pr={12} onClick={handleNewNoteClick}>
                         New note
                     </Button>
