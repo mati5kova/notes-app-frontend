@@ -16,7 +16,22 @@ import { toast } from 'react-toastify';
 import '../newnote/newnote.css';
 import Attachment from '../notes/Attachment';
 
-export default function EditNote({ editingNote, setEditingNote, title, subject, content, id, attachments, socket }) {
+export default function EditNote({
+    editingNote,
+    setEditingNote,
+    title,
+    subject,
+    content,
+    id,
+    attachments,
+    socket,
+    setTitle,
+    setContent,
+    setSubject,
+    setAttachments,
+    setLastUpdate,
+    setShouldPulse,
+}) {
     const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
     const [attached, setAttached] = useState([]);
@@ -88,26 +103,32 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                 });
 
                 const parsed = await response.json();
-                console.log(parsed);
                 if (parsed.msg === 'File(s) too large') {
                     close();
                     form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
-                } else if (parsed === 'Updated successfully') {
+                } else if (parsed.msg === 'Updated successfully') {
                     socket.emit('note_updated', { noteId: id });
-                    window.location.reload();
+
+                    close();
+                    handleModalClose();
+
+                    setTitle(parsed.updatedNote.title);
+                    setLastUpdate(parsed.updatedNote.last_update);
+                    setSubject(parsed.updatedNote.subject);
+                    setContent(parsed.updatedNote.content);
+                    setAttachments(parsed.updatedNote.attachments);
+                    setShouldPulse('temporary-gray');
                 } else if (parsed === 'Error deleting file(s)') {
                     close();
                     notifyError();
-                    if (import.meta.env.DEV) {
-                        console.log('Error deleting file(s)');
-                    }
+                    form.setFieldError('attachments', 'Error deleting file(s)');
                 } else if (parsed === 'Error uploading file(s)') {
                     close();
                     notifyError();
                     form.setFieldError('attachments', 'Failed to upload file(s)');
-                    if (import.meta.env.DEV) {
-                        console.log('Error uploading file(s)');
-                    }
+                } else if (parsed === 'Error updating note') {
+                    close();
+                    notifyError();
                 } else if (parsed === 'Unauthorized access' || parsed === 'Not authorized') {
                     notifyError();
                     close();
@@ -198,11 +219,11 @@ export default function EditNote({ editingNote, setEditingNote, title, subject, 
                     />
                     {attachments && (
                         <div className="note-attachments-editing">
-                            {attachments.map((attachment) => {
+                            {attachments.map((attachment, index) => {
                                 return (
                                     <Attachment
                                         editingEnv={true}
-                                        key={attachment.attachment_id}
+                                        key={index}
                                         url={attachment.url}
                                         file_original_name={attachment.file_original_name}
                                         file_extension={attachment.file_extension}

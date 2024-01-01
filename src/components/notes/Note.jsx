@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { IconEdit, IconShare3, IconTrash } from '@tabler/icons-react';
 import { forwardRef, useEffect, useState } from 'react';
-
+import { toast } from 'react-toastify';
 import EditNote from '../editnote/EditNote.jsx';
 import ShareNote from '../sharenote/ShareNote.jsx';
 import Attachment from './Attachment.jsx';
@@ -23,6 +23,15 @@ const Note = forwardRef(
         const [Scontent, setScontent] = useState(content);
         const [Sattachments, setSattachments] = useState(attachments);
 
+        const notify = (msg) => {
+            toast.error(msg, {
+                position: 'top-right',
+                autoClose: 5000,
+                closeOnClick: true,
+                pauseOnHover: true,
+            });
+        };
+
         const handleNoteOpenClick = () => {
             setOpened((opened) => !opened);
             setShouldPulse(false);
@@ -42,6 +51,7 @@ const Note = forwardRef(
                     method: 'DELETE',
                     headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                 });
+                socket.emit('note_deleted', { noteId: id });
                 setNotes((dNotes) =>
                     dNotes.filter((note) => {
                         return note.note_id !== id;
@@ -64,7 +74,16 @@ const Note = forwardRef(
 
         useEffect(() => {
             if ((shared_by_email && shared_by_email !== null) || isShared) {
-                socket.on(`note_${id}_updated`, async (noteId) => {
+                const deletedSharedNoteHandler = (noteId) => {
+                    notify('A note shared with you was recently deleted');
+                    setNotes((notes) => {
+                        return notes.filter((note) => {
+                            return note.note_id !== noteId;
+                        });
+                    });
+                };
+
+                const sharedNoteUpdatedHandler = async (noteId) => {
                     try {
                         const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/individual-note/${noteId}`, {
                             method: 'GET',
@@ -89,7 +108,14 @@ const Note = forwardRef(
                             console.log(error.message);
                         }
                     }
-                });
+                };
+
+                socket.on(`note_${id}_updated`, sharedNoteUpdatedHandler);
+                socket.on(`note_${id}_deleted`, deletedSharedNoteHandler);
+                return () => {
+                    socket.off(`note_${id}_updated`, sharedNoteUpdatedHandler);
+                    socket.off(`note_${id}_deleted`, deletedSharedNoteHandler);
+                };
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [isShared, opened, shouldPulse]);
@@ -111,6 +137,12 @@ const Note = forwardRef(
                         attachments={Sattachments}
                         id={id}
                         socket={socket}
+                        setTitle={setStitle}
+                        setSubject={setSsubject}
+                        setContent={setScontent}
+                        setAttachments={setSattachments}
+                        setLastUpdate={setSlastUpdate}
+                        setShouldPulse={setShouldPulse}
                     />
                 )}
 
@@ -143,7 +175,7 @@ const Note = forwardRef(
                         </div>
                     </div>
                     <div className="sharee-tools-row">
-                        <div className="sharee-user-div">{shared_by_email !== null && `Shared by: ${shared_by_email}`}</div>
+                        <div className="sharee-user-div">{shared_by_email && `Shared by: ${shared_by_email}`}</div>
                         {editing_permission === 0 && (
                             //če je lastnik lahko vse
                             <div className="note-tools">
@@ -161,12 +193,12 @@ const Note = forwardRef(
 
                     <div className="note-content">
                         <div dangerouslySetInnerHTML={{ __html: Scontent }}></div>
-                        {Sattachments && (
+                        {Sattachments && Sattachments.length > 0 && (
                             <div className="note-attachments">
-                                {Sattachments.map((attachment) => {
+                                {Sattachments.map((attachment, index) => {
                                     return (
                                         <Attachment
-                                            key={attachment.attachment_id}
+                                            key={index}
                                             url={attachment.url}
                                             note_id={id}
                                             file_name={attachment.file_name}
