@@ -75,6 +75,13 @@ export default function NewNote({ opened, setOpened, setNotes }) {
                     } else if (parsed.msg === 'Finished uploading') {
                         setNotes((notes) => [parsed.createdNote, ...notes]);
                         handleModalClose();
+                    } else if (parsed.msg === 'Failed to create the note') {
+                        close();
+                        notifyError();
+                    } else if (parsed.msg === 'Failed to upload attachments') {
+                        close();
+                        notifyError();
+                        form.setFieldError('attachments', 'Failed to upload attachments');
                     } else {
                         close();
                         notifyError();
