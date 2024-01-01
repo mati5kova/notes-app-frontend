@@ -47,16 +47,23 @@ const Note = forwardRef(
 
         const handleNoteDelete = async (id) => {
             try {
-                await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/delete-note/${id}`, {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/delete-note/${id}`, {
                     method: 'DELETE',
                     headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                 });
-                socket.emit('note_deleted', { noteId: id });
-                setNotes((dNotes) =>
-                    dNotes.filter((note) => {
-                        return note.note_id !== id;
-                    })
-                );
+                if (response.ok) {
+                    const parsed = await response.json();
+                    if (parsed === 'Deleted note') {
+                        socket.emit('note_deleted', { noteId: id });
+                        setNotes((dNotes) =>
+                            dNotes.filter((note) => {
+                                return note.note_id !== id;
+                            })
+                        );
+                    } else {
+                        notify('Error deleting note');
+                    }
+                }
             } catch (error) {
                 if (import.meta.env.DEV) {
                     console.log(error.message);
