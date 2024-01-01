@@ -85,10 +85,12 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
     return (
         <>
             {isAuthenticated === true &&
+                displayedNotes &&
+                displayedNotes.length > 0 &&
                 displayedNotes.map((note, index) => {
                     {
                         //-1(najmn kot loh das) pri notes.length je da se observer pojavi eno bolj gor da je bolj seamless
-                        if (notes.length - 4 === index) {
+                        if (notes.length - 1 === index) {
                             return (
                                 <Note
                                     ref={lastNoteElementRef}

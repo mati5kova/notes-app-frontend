@@ -25,6 +25,8 @@ export default function MainPage() {
     //popravi napako da stran fetcha naslednje note ko je rerender zaradi searcha
     const [activeSearch, setActiveSearch] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
+    const [searchIsDisplayed, setSearchIsDisplayed] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const [skeletonCount, setSkeletonCount] = useState(0); // State for skeleton count
 
@@ -83,7 +85,6 @@ export default function MainPage() {
         if (noMoreNotes) return;
         if (activeSearch) return;
         setLoading(true);
-
         axios({
             method: 'GET',
             headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
@@ -124,13 +125,39 @@ export default function MainPage() {
     return (
         <main>
             <div className={`dimmed-screen ${opened && 'active'}`}></div>
-            <Header setNotes={setNotes} setActiveSearch={setActiveSearch} />
+            <Header
+                setNotes={setNotes}
+                setActiveSearch={setActiveSearch}
+                setSearchIsDisplayed={setSearchIsDisplayed}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+            />
             <div className="main-container">
                 <div className={`new-button-full-container ${notes.length === 0 && 'center'}`}>
                     <Button rightSection={<IconPencilPlus stroke={2} width={18} />} pr={12} onClick={handleNewNoteClick}>
                         New note
                     </Button>
                 </div>
+
+                {searchIsDisplayed === true && (
+                    <a
+                        href="#"
+                        className="back-button"
+                        onClick={() => {
+                            setNoMoreNotes(false);
+                            setInitialLoading(true);
+                            setLoading(false);
+                            setActiveSearch(false);
+                            setSearchIsDisplayed(false);
+                            setNotes([]);
+                            setSearchTerm('');
+                            setPageNumber(1);
+                        }}
+                    >
+                        &lt;Go back
+                    </a>
+                )}
+
                 <NewNote opened={opened} setOpened={setOpened} setNotes={setNotes} />
                 {isAuthenticated && isAuthenticated === true && initialLoading === false && (
                     <Notes notes={notes} setNotes={setNotes} lastNoteElementRef={lastNoteElementRef} />

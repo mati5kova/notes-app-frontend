@@ -57,3 +57,8 @@
         transform: rotate(360deg);
     }
 }
+
+.back-button {
+    display: inline-block;
+    color: black;
+}

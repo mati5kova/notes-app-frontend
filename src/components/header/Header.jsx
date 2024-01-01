@@ -8,50 +8,63 @@ import useScrollDirection from '../../utils/scrollDirection';
 import './header.css';
 
 // eslint-disable-next-line react/prop-types
-export default function Header({ setNotes, setActiveSearch }) {
-    const [filteredSearch, setFilteredSearch] = useState('');
-
+export default function Header({ setNotes, setActiveSearch, setSearchIsDisplayed, searchTerm, setSearchTerm }) {
     const [userData, setUserData] = useState({});
     const scrollDirection = useScrollDirection();
 
     const { isAuthenticated, setIsAuthenticated, setUserEmail } = useContext(NotesContext);
 
+    const notify = (msg, type) => {
+        switch (type) {
+            case 'success':
+                toast.success(msg, {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    pauseOnHover: false,
+                });
+                break;
+            case 'info':
+                toast.info(msg, {
+                    position: 'top-center',
+                    autoClose: 5000,
+                    pauseOnHover: false,
+                });
+                break;
+            default:
+                break;
+        }
+    };
+
     const handleFilterSearch = async () => {
-        if (filteredSearch.length === 0) return;
+        // eslint-disable-next-line react/prop-types
+        if (searchTerm.length === 0) return;
         setActiveSearch(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/search-notes?search=${filteredSearch}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/search-notes?search=${searchTerm}`, {
                 method: 'GET',
                 headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
             });
-            const parseRes = await response.json();
-            await setNotes(parseRes);
+            if (response.ok) {
+                const parseRes = await response.json();
+                if (parseRes === 'No notes found') {
+                    notify('No notes found', 'info');
+                } else {
+                    setSearchIsDisplayed(true);
+                    setNotes(parseRes);
+                }
+            }
         } catch (error) {
             if (import.meta.env.DEV) {
                 console.log(error.message);
             }
         }
-        //console.log(filteredSearch);
-    };
-
-    const notify = () => {
-        toast.success('Successfully logged out', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-        });
     };
 
     const handleLogout = () => {
         setIsAuthenticated(false);
         sessionStorage.removeItem('jwt-token');
         setNotes([]);
-        notify();
+        notify('Successfully logged out', 'success');
     };
 
     const getUserInfo = async () => {
@@ -102,8 +115,8 @@ export default function Header({ setNotes, setActiveSearch }) {
                 <>
                     <div className="filter-search">
                         <TextInput
-                            value={filteredSearch}
-                            onChange={(event) => setFilteredSearch(event.currentTarget.value)}
+                            value={searchTerm}
+                            onChange={(event) => setSearchTerm(event.currentTarget.value)}
                             variant="filled"
                             placeholder="Search for notes"
                             rightSection={
