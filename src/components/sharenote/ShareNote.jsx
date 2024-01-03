@@ -97,8 +97,39 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                     socket.emit('note_shared', { user_email: form.values.recipient, noteId: id });
                     form.reset();
                     setAllowEditChecked(false);
-                } else if (parsed === 'Already sharing with this user') {
-                    form.setFieldError('recipient', 'Already sharing with this user');
+                } else if (parsed === 'Updated existing permission') {
+                    setSharedWith((shrdw) => {
+                        const updatedItemIndex = shrdw.findIndex((shr) => shr.shared_with_email === form.values.recipient);
+
+                        if (updatedItemIndex !== -1) {
+                            const updatedItem = shrdw[updatedItemIndex];
+                            const updatedPermission = updatedItem.editing_permission === 2 ? 1 : 2;
+
+                            const updatedArray = [
+                                { shared_with_email: form.values.recipient, editing_permission: updatedPermission },
+                                ...shrdw.slice(0, updatedItemIndex),
+                                ...shrdw.slice(updatedItemIndex + 1),
+                            ];
+
+                            return updatedArray;
+                        }
+
+                        return shrdw;
+                    });
+                    form.reset();
+                    setAllowEditChecked(false);
+                } else if (parsed === 'No change') {
+                    setSharedWith((shrdw) => {
+                        const updatedItemIndex = shrdw.findIndex((shr) => shr.shared_with_email === form.values.recipient);
+                        if (updatedItemIndex !== -1) {
+                            return [shrdw[updatedItemIndex], ...shrdw.slice(0, updatedItemIndex), ...shrdw.slice(updatedItemIndex + 1)];
+                        }
+                        return shrdw;
+                    });
+                    setIsShared(true);
+                    form.reset();
+                    setAllowEditChecked(false);
+                    //postavi ga na prvo mesto
                 } else {
                     if (import.meta.env.DEV) {
                         console.log('Something went wrong');
@@ -191,7 +222,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                                         <div className="individual-sharee" key={sharee.shared_with_email}>
                                             <div className="sharee-email">{sharee.shared_with_email}</div>
                                             <div style={{ position: 'relative', top: '3px' }}>
-                                                {sharee.editing_permission === true ? (
+                                                {sharee.editing_permission === 2 ? (
                                                     <Tooltip label="Has editing permissions">
                                                         <IconEdit size={21}></IconEdit>
                                                     </Tooltip>
