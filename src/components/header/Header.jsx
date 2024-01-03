@@ -81,6 +81,8 @@ export default function Header({ setNotes, setActiveSearch, setSearchIsDisplayed
                     setUserEmail(parseRes.user_email);
                 }
             } catch (error) {
+                setIsAuthenticated(false);
+                setNotes([]);
                 if (import.meta.env.DEV) {
                     console.log(error.message);
                 }
