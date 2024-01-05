@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Box, Button, Group, Paper, PasswordInput, TextInput } from '@mantine/core';
+import { Box, Button, Group, PasswordInput, TextInput } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
 import { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ export default function Login() {
         if (isAuthenticated && isAuthenticated === true) {
             navigate('/', { replace: true });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated]);
 
     const notify = () => {
@@ -83,12 +84,14 @@ export default function Login() {
                 <div className="signup-login-form">
                     <Box maw={400} mx="auto">
                         <form onSubmit={form.onSubmit(handleLoginSubmit)}>
-                            <TextInput label="Email" placeholder="email" mt="md" {...form.getInputProps('email')} autoFocus />
+                            <TextInput label="Email" placeholder="email" mt="md" {...form.getInputProps('email')} autoFocus withAsterisk />
 
-                            <PasswordInput label="Password" placeholder="password" mt="md" {...form.getInputProps('password')} />
+                            <PasswordInput label="Password" placeholder="password" mt="md" {...form.getInputProps('password')} withAsterisk />
 
                             <Group justify="flex-end" mt="md">
-                                <Button type="submit">Submit</Button>
+                                <Button type="submit" style={{ width: '100%' }}>
+                                    Log in
+                                </Button>
                             </Group>
                             <Group justify="center" mt="md">
                                 Don&apos;t have an account?

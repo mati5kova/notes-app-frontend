@@ -1,0 +1,12 @@
+.name-lastname {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.button-bottom-settings {
+    display: flex;
+    justify-content: space-between;
+}
+.button-bottom-settings > button {
+    width: 5.2rem;
+}

@@ -8,6 +8,7 @@ import Login from './components/login/Login.jsx';
 import MainPage from './components/mainpage/MainPage.jsx';
 import NotFound from './components/notfound/NotFound.jsx';
 import SignUp from './components/signup/SignUp.jsx';
+import UserSettings from './components/usersettings/UserSettings.jsx';
 
 export const NotesContext = createContext();
 
@@ -22,7 +23,6 @@ export default function App() {
             autoClose: false,
             closeOnClick: true,
             draggable: true,
-            limit: 1,
             onClick: () => navigate('/login'),
         });
     };
@@ -77,6 +77,7 @@ export default function App() {
                     <Route path="/" element={<MainPage />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/account" element={<UserSettings />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </MantineProvider>
