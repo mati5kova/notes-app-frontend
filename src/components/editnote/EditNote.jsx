@@ -82,6 +82,12 @@ export default function EditNote({
         formCleanUp();
     };
 
+    const focusFunction = () => {
+        if (!editor.isFocused) {
+            editor.commands.focus('end');
+        }
+    };
+
     const handleEditNoteSubmit = async () => {
         if (form.isValid()) {
             open();
@@ -101,41 +107,47 @@ export default function EditNote({
                     headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                     body: formData,
                 });
+                if (response.ok) {
+                    const parsed = await response.json();
+                    if (parsed.msg === 'File(s) too large') {
+                        close();
+                        form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
+                    } else if (parsed.msg === 'Updated successfully') {
+                        socket.emit('note_updated', { noteId: id });
 
-                const parsed = await response.json();
-                if (parsed.msg === 'File(s) too large') {
-                    close();
-                    form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
-                } else if (parsed.msg === 'Updated successfully') {
-                    socket.emit('note_updated', { noteId: id });
+                        close();
+                        handleModalClose();
 
-                    close();
-                    handleModalClose();
-
-                    setTitle(parsed.updatedNote.title);
-                    setLastUpdate(parsed.updatedNote.last_update);
-                    setSubject(parsed.updatedNote.subject);
-                    setContent(parsed.updatedNote.content);
-                    setAttachments(parsed.updatedNote.attachments);
-                    setShouldPulse('temporary-gray');
-                } else if (parsed === 'Error deleting file(s)') {
-                    close();
-                    notifyError();
-                    form.setFieldError('attachments', 'Error deleting file(s)');
-                } else if (parsed === 'Error uploading file(s)') {
-                    close();
-                    notifyError();
-                    form.setFieldError('attachments', 'Failed to upload file(s)');
-                } else if (parsed === 'Error updating note') {
-                    close();
-                    notifyError();
-                } else if (parsed === 'Unauthorized access' || parsed === 'Not authorized') {
-                    notifyError();
-                    close();
-                } else {
-                    if (import.meta.env.DEV) {
-                        console.log(parsed);
+                        setTitle(parsed.updatedNote.title);
+                        setLastUpdate(parsed.updatedNote.last_update);
+                        setSubject(parsed.updatedNote.subject);
+                        setContent(parsed.updatedNote.content);
+                        setAttachments(parsed.updatedNote.attachments);
+                        setShouldPulse('temporary-gray');
+                    } else if (parsed === 'Error deleting file(s)') {
+                        close();
+                        notifyError();
+                        form.setFieldError('attachments', 'Error deleting file(s)');
+                    } else if (parsed === 'Error uploading file(s)') {
+                        close();
+                        notifyError();
+                        form.setFieldError('attachments', 'Failed to upload file(s)');
+                    } else if (parsed === 'Error updating note') {
+                        close();
+                        notifyError();
+                    } else if (parsed === 'Unauthorized access' || parsed === 'Not authorized') {
+                        notifyError();
+                        close();
+                    } else {
+                        notifyError();
+                        close();
+                        if (import.meta.env.DEV) {
+                            console.log(parsed);
+                        }
                     }
+                } else {
+                    notifyError();
+                    close();
                 }
             } catch (error) {
                 close();
@@ -237,7 +249,12 @@ export default function EditNote({
                         </div>
                     )}
 
-                    <RichTextEditor editor={editor} style={{ height: `${rteHeight}`, bottom: '4rem' }} {...form.getInputProps('content')}>
+                    <RichTextEditor
+                        editor={editor}
+                        style={{ height: `${rteHeight}`, bottom: '4rem' }}
+                        {...form.getInputProps('content')}
+                        onClick={focusFunction}
+                    >
                         <RichTextEditor.Toolbar sticky stickyOffset={60} className="rich-editor-toolbar">
                             <RichTextEditor.ControlsGroup className="toolbar-spacing">
                                 <RichTextEditor.Bold />

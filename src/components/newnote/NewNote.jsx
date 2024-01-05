@@ -50,6 +50,12 @@ export default function NewNote({ opened, setOpened, setNotes }) {
         formCleanUp();
     };
 
+    const focusFunction = () => {
+        if (!editor.isFocused) {
+            editor.commands.focus('end');
+        }
+    };
+
     const handleNewNoteSubmit = async () => {
         if (form.isValid()) {
             open();
@@ -88,6 +94,12 @@ export default function NewNote({ opened, setOpened, setNotes }) {
                         if (import.meta.env.DEV) {
                             console.log('Something went wrong');
                         }
+                    }
+                } else {
+                    close();
+                    notifyError();
+                    if (import.meta.env.DEV) {
+                        console.log('Something went wrong');
                     }
                 }
             } catch (error) {
@@ -171,7 +183,7 @@ export default function NewNote({ opened, setOpened, setNotes }) {
                     />
 
                     <div className="rich-editor-container">
-                        <RichTextEditor editor={editor}>
+                        <RichTextEditor editor={editor} onClick={focusFunction} style={{ zIndex: '101' }}>
                             <RichTextEditor.Toolbar sticky stickyOffset={60} className="rich-editor-toolbar">
                                 <RichTextEditor.ControlsGroup className="toolbar-spacing">
                                     <RichTextEditor.Bold />
