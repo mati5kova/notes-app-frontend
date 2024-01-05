@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { IconEdit, IconShare3, IconTrash } from '@tabler/icons-react';
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { NotesContext } from '../../App.jsx';
 import EditNote from '../editnote/EditNote.jsx';
 import ShareNote from '../sharenote/ShareNote.jsx';
 import Attachment from './Attachment.jsx';
@@ -22,6 +23,9 @@ const Note = forwardRef(
         const [Ssubject, setSsubject] = useState(subject);
         const [Scontent, setScontent] = useState(content);
         const [Sattachments, setSattachments] = useState(attachments);
+        const [Sediting_permission, setSediting_permission] = useState(editing_permission);
+
+        const { userEmail } = useContext(NotesContext);
 
         const notify = (msg) => {
             toast.error(msg, {
@@ -117,11 +121,23 @@ const Note = forwardRef(
                     }
                 };
 
+                const handlePermissionChange = async (ep) => {
+                    try {
+                        setSediting_permission(ep);
+                    } catch (error) {
+                        if (import.meta.env.DEV) {
+                            console.log(error.message);
+                        }
+                    }
+                };
+
                 socket.on(`note_${id}_updated`, sharedNoteUpdatedHandler);
                 socket.on(`note_${id}_deleted`, deletedSharedNoteHandler);
+                socket.on(`note_shared_permission_change_${id}_${userEmail}`, handlePermissionChange);
                 return () => {
                     socket.off(`note_${id}_updated`, sharedNoteUpdatedHandler);
                     socket.off(`note_${id}_deleted`, deletedSharedNoteHandler);
+                    socket.off(`note_shared_permission_change_${id}_${userEmail}`, handlePermissionChange);
                 };
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -133,7 +149,7 @@ const Note = forwardRef(
 
                 {/* opened je dodan zato da se api klic za sharee-je kliče samo če se note odpre in da že čakajo podatki */}
                 <ShareNote sharingNote={sharingNote} setSharingNote={setSharingNote} id={id} setIsShared={setIsShared} socket={socket} />
-                {(editing_permission === 0 || editing_permission === 2) && editingNote && (
+                {(Sediting_permission === 0 || Sediting_permission === 2) && editingNote && (
                     //da ne generiramo edit nota za vse note in da se resetira isDeleted
                     <EditNote
                         editingNote={editingNote}
@@ -183,7 +199,7 @@ const Note = forwardRef(
                     </div>
                     <div className="sharee-tools-row">
                         <div className="sharee-user-div">{shared_by_email && `Shared by: ${shared_by_email}`}</div>
-                        {editing_permission === 0 && (
+                        {Sediting_permission === 0 && (
                             //če je lastnik lahko vse
                             <div className="note-tools">
                                 <IconTrash onClick={() => handleNoteDelete(id)} />
@@ -191,7 +207,7 @@ const Note = forwardRef(
                                 <IconEdit onClick={() => handleNoteEdit(id)} />
                             </div>
                         )}
-                        {editing_permission === 2 && (
+                        {Sediting_permission === 2 && (
                             <div className="note-tools">
                                 <IconEdit onClick={() => handleNoteEdit(id)} />
                             </div>

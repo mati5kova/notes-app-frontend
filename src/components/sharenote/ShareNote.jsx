@@ -111,6 +111,11 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                                 ...shrdw.slice(updatedItemIndex + 1),
                             ];
 
+                            socket.emit('note_shared_permission_change', {
+                                user_email: form.values.recipient,
+                                noteId: id,
+                                editing_permission: updatedPermission,
+                            });
                             return updatedArray;
                         }
 
@@ -220,7 +225,9 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                                 {sharedWith.map((sharee) => {
                                     return (
                                         <div className="individual-sharee" key={sharee.shared_with_email}>
-                                            <div className="sharee-email">{sharee.shared_with_email}</div>
+                                            <div className="sharee-email" onClick={() => form.setFieldValue('recipient', sharee.shared_with_email)}>
+                                                <p style={{ cursor: 'pointer', width: 'min-content' }}>{sharee.shared_with_email}</p>
+                                            </div>
                                             <div style={{ position: 'relative', top: '3px' }}>
                                                 {sharee.editing_permission === 2 ? (
                                                     <Tooltip label="Has editing permissions">
