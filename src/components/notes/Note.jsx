@@ -24,15 +24,15 @@ const Note = forwardRef(
         const [Scontent, setScontent] = useState(content);
         const [Sattachments, setSattachments] = useState(attachments);
         const [Sediting_permission, setSediting_permission] = useState(editing_permission);
-        const [Snote_version, setSnote_version] = useState(note_version);
-        const [editingNoteVersion, setEditingNoteVersion] = useState(Snote_version);
+        const [Snote_version, setSnote_version] = useState(note_version); //verzija shranjena v notu
+        const [editingNoteVersion, setEditingNoteVersion] = useState(Snote_version); //verzija passana v edit note in updatana ko ne editaš
 
         const { userEmail } = useContext(NotesContext);
 
-        const notify = (msg) => {
+        const notify = (msg, closes) => {
             toast.error(msg, {
                 position: 'top-right',
-                autoClose: 5000,
+                autoClose: closes === false ? false : 5000,
                 closeOnClick: true,
                 pauseOnHover: true,
             });
@@ -119,6 +119,10 @@ const Note = forwardRef(
                             setSattachments(parsed[0].attachments);
                             setSnote_version(parsed[0].note_version);
 
+                            if (editingNote) {
+                                notify('Someone else edited this note, exit to view the changes.', false);
+                            }
+
                             if (shared_by_email && shared_by_email !== null) {
                                 setShouldPulse('always-blue');
                             } else {
@@ -152,7 +156,7 @@ const Note = forwardRef(
                 };
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [isShared, opened, shouldPulse]);
+        }, [isShared, opened, shouldPulse, editingNote]);
 
         return (
             <>

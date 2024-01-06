@@ -140,7 +140,7 @@ export default function EditNote({
                         notifyError('Failed to edit the note');
                     } else if (parsed === 'Old note version') {
                         close();
-                        notifyError('Someone else edited this note. Close to view the changes.');
+                        notifyError('Someone else edited this note, exit to view the changes.');
                     } else {
                         close();
                         notifyError('Failed to edit the note');
