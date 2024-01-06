@@ -9,7 +9,7 @@ import Attachment from './Attachment.jsx';
 import './notes.css';
 
 const Note = forwardRef(
-    ({ setNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email, socket, shouldAnimate }, ref) => {
+    ({ setNotes, id, title, content, subject, last_update, attachments, editing_permission, shared_by_email, socket, shouldAnimate, note_version }, ref) => {
         //0: owner        1: lahko vidi       2:lahko edita
         const [opened, setOpened] = useState(false); //za razširitev nota s klikom
         const [editingNote, setEditingNote] = useState(false); //za editanje nota
@@ -24,6 +24,8 @@ const Note = forwardRef(
         const [Scontent, setScontent] = useState(content);
         const [Sattachments, setSattachments] = useState(attachments);
         const [Sediting_permission, setSediting_permission] = useState(editing_permission);
+        const [Snote_version, setSnote_version] = useState(note_version);
+        const [editingNoteVersion, setEditingNoteVersion] = useState(Snote_version);
 
         const { userEmail } = useContext(NotesContext);
 
@@ -48,6 +50,14 @@ const Note = forwardRef(
         const handleSharingNote = () => {
             setSharingNote((sharingNote) => !sharingNote);
         };
+
+        //editingNoteVersion je verzija nota ki je passana v edit note komponento
+        //updata se samo če note gledamo ne pa editamo
+        useEffect(() => {
+            if (editingNote !== true) {
+                setEditingNoteVersion(Snote_version);
+            }
+        }, [editingNote, Snote_version]);
 
         const handleNoteDelete = async (id) => {
             try {
@@ -107,6 +117,7 @@ const Note = forwardRef(
                             setScontent(parsed[0].content);
                             setSlastUpdate(parsed[0].last_update);
                             setSattachments(parsed[0].attachments);
+                            setSnote_version(parsed[0].note_version);
 
                             if (shared_by_email && shared_by_email !== null) {
                                 setShouldPulse('always-blue');
@@ -166,6 +177,9 @@ const Note = forwardRef(
                         setAttachments={setSattachments}
                         setLastUpdate={setSlastUpdate}
                         setShouldPulse={setShouldPulse}
+                        editingNoteVersion={editingNoteVersion}
+                        setSnote_version={setSnote_version}
+                        Snote_version={Snote_version}
                     />
                 )}
 

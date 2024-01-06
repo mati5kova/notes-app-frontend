@@ -106,6 +106,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                                     shared_by_email={note.shared_by_email}
                                     socket={socket}
                                     shouldAnimate={note.shouldAnimate || 'never'}
+                                    note_version={note.note_version}
                                 ></Note>
                             );
                         } else {
@@ -123,6 +124,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
                                     shared_by_email={note.shared_by_email}
                                     socket={socket}
                                     shouldAnimate={note.shouldAnimate || 'never'}
+                                    note_version={note.note_version}
                                 ></Note>
                             );
                         }

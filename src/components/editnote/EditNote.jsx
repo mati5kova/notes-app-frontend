@@ -31,6 +31,8 @@ export default function EditNote({
     setAttachments,
     setLastUpdate,
     setShouldPulse,
+    editingNoteVersion,
+    setSnote_version,
 }) {
     const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
@@ -54,16 +56,12 @@ export default function EditNote({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const notifyError = () => {
-        toast.error('Failed to edit the note', {
+    const notifyError = (msg) => {
+        toast.error(msg, {
             position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
+            autoClose: false,
             closeOnClick: true,
-            pauseOnHover: false,
             draggable: true,
-            progress: undefined,
-            theme: 'light',
         });
     };
 
@@ -90,18 +88,19 @@ export default function EditNote({
 
     const handleEditNoteSubmit = async () => {
         if (form.isValid()) {
-            open();
-            const formData = new FormData();
-            formData.append('title', form.values.title);
-            formData.append('subject', form.values.subject);
-            formData.append('content', form.values.content);
-            form.values.attachments.forEach((file) => {
-                formData.append('attachments', file);
-            });
-
-            formData.append('filesToDelete', JSON.stringify(filesToDelete));
-
             try {
+                open();
+                const formData = new FormData();
+                formData.append('title', form.values.title);
+                formData.append('subject', form.values.subject);
+                formData.append('content', form.values.content);
+                formData.append('noteVersion', editingNoteVersion);
+                form.values.attachments.forEach((file) => {
+                    formData.append('attachments', file);
+                });
+
+                formData.append('filesToDelete', JSON.stringify(filesToDelete));
+
                 const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/update-note/${id}`, {
                     method: 'PUT',
                     headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
@@ -124,37 +123,44 @@ export default function EditNote({
                         setContent(parsed.updatedNote.content);
                         setAttachments(parsed.updatedNote.attachments);
                         setShouldPulse('temporary-gray');
+                        setSnote_version(parsed.updatedNote.note_version);
                     } else if (parsed === 'Error deleting file(s)') {
                         close();
-                        notifyError();
+                        notifyError('Failed to edit the note');
                         form.setFieldError('attachments', 'Error deleting file(s)');
                     } else if (parsed === 'Error uploading file(s)') {
                         close();
-                        notifyError();
+                        notifyError('Failed to edit the note');
                         form.setFieldError('attachments', 'Failed to upload file(s)');
                     } else if (parsed === 'Error updating note') {
                         close();
-                        notifyError();
+                        notifyError('Failed to edit the note');
                     } else if (parsed === 'Unauthorized access' || parsed === 'Not authorized') {
-                        notifyError();
                         close();
+                        notifyError('Failed to edit the note');
+                    } else if (parsed === 'Old note version') {
+                        close();
+                        notifyError('Someone else edited this note. Close to view the changes.');
                     } else {
-                        notifyError();
                         close();
+                        notifyError('Failed to edit the note');
                         if (import.meta.env.DEV) {
                             console.log(parsed);
                         }
                     }
                 } else {
-                    notifyError();
                     close();
+                    notifyError('Failed to edit the note');
+                    if (import.meta.env.DEV) {
+                        console.log('oops something went wrong');
+                    }
                 }
             } catch (error) {
                 close();
+                notifyError('Failed to edit the note');
                 if (import.meta.env.DEV) {
                     console.log(error.message);
                 }
-                notifyError();
             }
         }
     };
