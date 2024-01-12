@@ -116,6 +116,7 @@ export default function UserSettings() {
     };
 
     const getUserInfo = async () => {
+        form.setValues({ name: 'loading...', lastName: 'loading...', email: 'loading...' });
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/dashboard/info`, {
                 method: 'GET',
@@ -146,7 +147,7 @@ export default function UserSettings() {
 
     return (
         <div className="signup-login-form-container">
-            <Box maw={400} mx="auto">
+            <Box mx="auto">
                 <form onSubmit={form.onSubmit(handleFormSubmit)}>
                     <div className="name-lastname">
                         <TextInput label="Name" disabled style={{ marginRight: '1rem' }} {...form.getInputProps('name')} />

@@ -1,6 +1,6 @@
-import { Affix, Button, Transition, rem } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useWindowScroll } from '@mantine/hooks';
-import { IconArrowUp, IconPencilPlus } from '@tabler/icons-react';
+import { IconPencilPlus } from '@tabler/icons-react';
 import axios from 'axios';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
@@ -13,7 +13,7 @@ import Notes from '../notes/Notes.jsx';
 import './mainpage.css';
 
 export default function MainPage() {
-    const [scroll, scrollTo] = useWindowScroll();
+    const [, scrollTo] = useWindowScroll();
     const { isAuthenticated } = useContext(NotesContext);
     const DEFAULT_LIMIT = 12;
     const [opened, setOpened] = useState(false);
@@ -33,6 +33,8 @@ export default function MainPage() {
     useEffect(() => {
         const countFromStorage = parseInt(localStorage.getItem('numberOfNotes')) || 0;
         setSkeletonCount(countFromStorage);
+        scrollTo({ y: 0 });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const observer = useRef();
@@ -133,7 +135,7 @@ export default function MainPage() {
                 setSearchTerm={setSearchTerm}
             />
             <div className="main-container">
-                <div className={`new-button-full-container ${notes.length === 0 && 'center'}`}>
+                <div className={`new-button-full-container ${notes.length === 0 && !loading && 'center'}`}>
                     <Button rightSection={<IconPencilPlus stroke={2} width={18} />} pr={12} onClick={handleNewNoteClick}>
                         New note
                     </Button>
@@ -159,6 +161,7 @@ export default function MainPage() {
                 )}
 
                 <NewNote opened={opened} setOpened={setOpened} setNotes={setNotes} />
+
                 {isAuthenticated && isAuthenticated === true && initialLoading === false && (
                     <Notes notes={notes} setNotes={setNotes} lastNoteElementRef={lastNoteElementRef} />
                 )}
@@ -166,19 +169,6 @@ export default function MainPage() {
                 {loading && !initialLoading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
                 {loading && initialLoading && renderSkeletonLoaders()}
             </div>
-            <Affix position={{ bottom: 20, right: 20 }} style={{ zIndex: 50 }}>
-                <Transition transition="slide-up" mounted={scroll.y > 0}>
-                    {(transitionStyles) => (
-                        <Button
-                            leftSection={<IconArrowUp style={{ width: rem(16), height: rem(16) }} />}
-                            style={transitionStyles}
-                            onClick={() => scrollTo({ y: 0 })}
-                        >
-                            Scroll to top
-                        </Button>
-                    )}
-                </Transition>
-            </Affix>
         </main>
     );
 }

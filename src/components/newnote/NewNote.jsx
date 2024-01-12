@@ -180,7 +180,7 @@ export default function NewNote({ opened, setOpened, setNotes }) {
                     />
                     <TextInput
                         label="Subject"
-                        placeholder="subject"
+                        placeholder="displayed as [subject] title"
                         {...form.getInputProps('subject')}
                         className="new-note-subject new-note-form-basic-input"
                     />

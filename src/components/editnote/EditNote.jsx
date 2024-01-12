@@ -234,7 +234,7 @@ export default function EditNote({
 
                     <TextInput
                         label="Subject"
-                        placeholder="subject"
+                        placeholder="displayed as [subject] title"
                         {...form.getInputProps('subject')}
                         className="new-note-subject editing new-note-form-basic-input"
                     />

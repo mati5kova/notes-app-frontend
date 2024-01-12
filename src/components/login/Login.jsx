@@ -87,7 +87,7 @@ export default function Login() {
                 <div className="signup-login-form">
                     <Box maw={400} mx="auto">
                         <form onSubmit={form.onSubmit(handleLoginSubmit)}>
-                            <TextInput label="Email" placeholder="email" mt="md" {...form.getInputProps('email')} autoFocus withAsterisk />
+                            <TextInput label="Email" placeholder="email" mt="md" {...form.getInputProps('email')} withAsterisk />
 
                             <PasswordInput label="Password" placeholder="password" mt="md" {...form.getInputProps('password')} withAsterisk />
 
