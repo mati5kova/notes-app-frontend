@@ -2,14 +2,14 @@
 import { Button, FileInput, LoadingOverlay, TextInput } from '@mantine/core';
 import { hasLength, isNotEmpty, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
-import { Link, RichTextEditor } from '@mantine/tiptap';
+import { RichTextEditor } from '@mantine/tiptap';
 import { IconMaximize, IconMinimize, IconX } from '@tabler/icons-react';
+import HardBreak from '@tiptap/extension-hard-break';
 import Highlight from '@tiptap/extension-highlight';
 import SubScript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
-import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
-import { useEditor } from '@tiptap/react';
+import { BubbleMenu, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -180,7 +180,22 @@ export default function EditNote({
     });
 
     const editor = useEditor({
-        extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight, TextAlign.configure({ types: ['heading', 'paragraph'] })],
+        extensions: [
+            StarterKit,
+            Underline,
+            Superscript,
+            SubScript,
+            Highlight,
+            HardBreak.extend({
+                addKeyboardShortcuts() {
+                    return {
+                        Enter: () => {
+                            this.editor.chain().createParagraphNear().run();
+                        },
+                    };
+                },
+            }),
+        ],
         content: content,
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
@@ -269,7 +284,6 @@ export default function EditNote({
                                 <RichTextEditor.Strikethrough />
                                 <RichTextEditor.ClearFormatting />
                                 <RichTextEditor.Highlight />
-                                <RichTextEditor.Code />
                             </RichTextEditor.ControlsGroup>
 
                             <RichTextEditor.ControlsGroup className="toolbar-spacing">
@@ -287,19 +301,16 @@ export default function EditNote({
                                 <RichTextEditor.Subscript />
                                 <RichTextEditor.Superscript />
                             </RichTextEditor.ControlsGroup>
-
-                            <RichTextEditor.ControlsGroup className="toolbar-spacing">
-                                <RichTextEditor.Link />
-                                <RichTextEditor.Unlink />
-                            </RichTextEditor.ControlsGroup>
-
-                            <RichTextEditor.ControlsGroup className="toolbar-spacing">
-                                <RichTextEditor.AlignLeft />
-                                <RichTextEditor.AlignCenter />
-                                <RichTextEditor.AlignJustify />
-                                <RichTextEditor.AlignRight />
-                            </RichTextEditor.ControlsGroup>
                         </RichTextEditor.Toolbar>
+
+                        {editor && (
+                            <BubbleMenu editor={editor}>
+                                <RichTextEditor.ControlsGroup>
+                                    <RichTextEditor.Bold />
+                                    <RichTextEditor.Italic />
+                                </RichTextEditor.ControlsGroup>
+                            </BubbleMenu>
+                        )}
 
                         <RichTextEditor.Content className="editor-content"></RichTextEditor.Content>
                     </RichTextEditor>

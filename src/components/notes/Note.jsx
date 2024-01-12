@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { IconEdit, IconShare3, IconTrash } from '@tabler/icons-react';
+import parse from 'html-react-parser';
 import { forwardRef, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { NotesContext } from '../../App.jsx';
@@ -198,8 +199,7 @@ const Note = forwardRef(
                             : shouldPulse === 'always-gray'
                             ? 'pulsing-anim-gray'
                             : ''
-                    }`}
-                    tabIndex={0}
+                    } ${Sattachments && Sattachments.length > 0 && 'has-attachments'}`}
                     ref={ref}
                     onMouseOver={() => {
                         if (opened) {
@@ -232,25 +232,26 @@ const Note = forwardRef(
                         )}
                     </div>
 
-                    <div className="note-content">
-                        <div dangerouslySetInnerHTML={{ __html: Scontent }}></div>
-                        {Sattachments && Sattachments.length > 0 && (
-                            <div className="note-attachments">
-                                {Sattachments.map((attachment, index) => {
-                                    return (
-                                        <Attachment
-                                            key={index}
-                                            url={attachment.url}
-                                            note_id={id}
-                                            file_name={attachment.file_name}
-                                            file_original_name={attachment.file_original_name}
-                                            file_extension={attachment.file_extension}
-                                        ></Attachment>
-                                    );
-                                })}
-                            </div>
-                        )}
+                    <div className="note-content ql-editor">
+                        <div>{parse(Scontent)}</div>
                     </div>
+                    {/* <div dangerouslySetInnerHTML={{ __html: Scontent }}></div> */}
+                    {Sattachments && Sattachments.length > 0 && (
+                        <div className="note-attachments">
+                            {Sattachments.map((attachment, index) => {
+                                return (
+                                    <Attachment
+                                        key={index}
+                                        url={attachment.url}
+                                        note_id={id}
+                                        file_name={attachment.file_name}
+                                        file_original_name={attachment.file_original_name}
+                                        file_extension={attachment.file_extension}
+                                    ></Attachment>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
             </>
         );
