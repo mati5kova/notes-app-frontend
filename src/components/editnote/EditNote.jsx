@@ -4,7 +4,6 @@ import { hasLength, isNotEmpty, useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { RichTextEditor } from '@mantine/tiptap';
 import { IconMaximize, IconMinimize, IconX } from '@tabler/icons-react';
-import HardBreak from '@tiptap/extension-hard-break';
 import Highlight from '@tiptap/extension-highlight';
 import SubScript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
@@ -180,22 +179,7 @@ export default function EditNote({
     });
 
     const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            Superscript,
-            SubScript,
-            Highlight,
-            HardBreak.extend({
-                addKeyboardShortcuts() {
-                    return {
-                        Enter: () => {
-                            this.editor.chain().createParagraphNear().run();
-                        },
-                    };
-                },
-            }),
-        ],
+        extensions: [Underline, Superscript, SubScript, Highlight, StarterKit],
         content: content,
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
