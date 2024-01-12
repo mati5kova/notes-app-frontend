@@ -81,6 +81,9 @@ export default function SignUp() {
 
     return (
         <div className="signup-login-form-container">
+            <div onClick={() => navigate(-1)} style={{ textDecoration: 'underline', color: 'black', marginBottom: '1rem' }}>
+                {'< Back'}
+            </div>
             <div className="signup-login-form">
                 <Box maw={400} mx="auto">
                     <form onSubmit={form.onSubmit(handleSignupSubmit)}>
