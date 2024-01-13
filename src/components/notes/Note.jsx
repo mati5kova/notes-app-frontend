@@ -89,8 +89,10 @@ const Note = forwardRef(
         useEffect(() => {
             // da ne moreš scrollat ko ...
             document.body.style.overflowY = editingNote || sharingNote ? 'hidden' : 'scroll';
+            document.body.style.position = editingNote || sharingNote ? 'fixed' : 'static';
             return () => {
                 document.body.style.overflowY = 'scroll';
+                document.body.style.position = 'static';
             };
         }, [editingNote, sharingNote]);
 
@@ -232,7 +234,7 @@ const Note = forwardRef(
                         )}
                     </div>
 
-                    <div className="note-content ql-editor">
+                    <div className="note-content">
                         <div>{parse(Scontent)}</div>
                     </div>
                     {/* <div dangerouslySetInnerHTML={{ __html: Scontent }}></div> */}

@@ -80,7 +80,13 @@ export default function MainPage() {
 
     useEffect(() => {
         //da ne moreš scrollat ko si v newnote kreaciji
-        opened ? (document.body.style.overflowY = 'hidden') : (document.body.style.overflowY = 'scroll');
+        document.body.style.overflowY = opened === true ? 'hidden' : 'scroll';
+        document.body.style.position = opened === true ? 'fixed' : 'static';
+
+        return () => {
+            document.body.style.overflowY = 'scroll';
+            document.body.style.position = 'static';
+        };
     }, [opened]);
 
     useEffect(() => {
