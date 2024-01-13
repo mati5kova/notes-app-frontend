@@ -112,3 +112,15 @@ input[type='checkbox'] {
 .trash-icon-sharing:hover {
     transform: scale(0.98);
 }
+
+@media only screen and (max-width: 480px) {
+    .new-note-modal.active.sharing {
+        max-width: 90vw;
+    }
+    .new-note-title.sharing {
+        width: calc(100% - 4rem * 2);
+    }
+    .new-note-submit.sharing {
+        width: 4rem;
+    }
+}

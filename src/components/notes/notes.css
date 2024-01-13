@@ -179,3 +179,32 @@
     left: 2rem;
     cursor: pointer;
 }
+
+@media only screen and (max-width: 480px) {
+    .note-wrapper {
+        max-height: 4.6rem;
+    }
+    .note-title > h2 {
+        font-size: 16px;
+    }
+    .note-content {
+        line-height: 1.45;
+    }
+
+    .attachments {
+        margin-right: 0.5rem;
+    }
+    .attachment-name {
+        max-width: 3.2rem;
+        line-height: 1;
+    }
+    .attachments.editing {
+        top: 28%;
+    }
+    .attachment-icons {
+        transform: scale(0.9);
+    }
+    .note-attachments-editing {
+        top: 36%;
+    }
+}

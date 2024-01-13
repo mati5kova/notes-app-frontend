@@ -12,3 +12,12 @@
 .signup-login-form {
     width: 300px;
 }
+
+@media only screen and (max-width: 480px) {
+    .signup-login-form-container {
+        width: 80vw;
+    }
+    .signup-login-form {
+        max-width: 100%;
+    }
+}

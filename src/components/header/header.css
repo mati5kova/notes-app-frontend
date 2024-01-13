@@ -75,3 +75,33 @@ header.up {
     position: absolute;
     right: 5rem;
 }
+
+@media only screen and (max-width: 480px) {
+    .header-title-left,
+    .header-title-middle {
+        font-size: 12px;
+        padding-left: 1.5rem;
+        position: absolute;
+        left: 3rem;
+        top: 0.85rem;
+        max-width: min-content;
+        word-wrap: break-word;
+        line-height: 20px;
+        text-align: center;
+    }
+    .header-title-left {
+        left: -0.5rem;
+    }
+    .filter-search {
+        width: 13rem;
+        right: 3.5rem;
+    }
+
+    .header-right-side > a > button {
+        margin: 0 0rem 0 1rem;
+    }
+    .account-icon {
+        right: 1rem;
+        transform: scale(1.4);
+    }
+}
