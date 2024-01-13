@@ -82,6 +82,7 @@ export default function MainPage() {
         //da ne moreš scrollat ko si v newnote kreaciji
         document.body.style.overflowY = opened === true ? 'hidden' : 'scroll';
         document.body.style.position = opened === true ? 'fixed' : 'static';
+        document.querySelector('.main-container').style.width = opened === true ? '100vw' : '100%';
 
         return () => {
             document.body.style.overflowY = 'scroll';

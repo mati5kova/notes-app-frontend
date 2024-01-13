@@ -90,9 +90,11 @@ const Note = forwardRef(
             // da ne moreš scrollat ko ...
             document.body.style.overflowY = editingNote || sharingNote ? 'hidden' : 'scroll';
             document.body.style.position = editingNote || sharingNote ? 'fixed' : 'static';
+            document.querySelector('.main-container').style.width = editingNote || sharingNote === true ? '100vw' : '100%';
             return () => {
                 document.body.style.overflowY = 'scroll';
                 document.body.style.position = 'static';
+                document.querySelector('.main-container').style.width = '100%';
             };
         }, [editingNote, sharingNote]);
 
