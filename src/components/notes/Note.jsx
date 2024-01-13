@@ -69,7 +69,7 @@ const Note = forwardRef(
                 if (response.ok) {
                     const parsed = await response.json();
                     if (parsed === 'Deleted note') {
-                        socket.emit('note_deleted', { noteId: id });
+                        socket.emit('note_deleted', { noteId: id, token: sessionStorage.getItem('jwt-token') });
                         setNotes((dNotes) =>
                             dNotes.filter((note) => {
                                 return note.note_id !== id;

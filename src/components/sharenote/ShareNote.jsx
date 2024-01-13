@@ -94,7 +94,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                 } else if (parsed === 'Successfully shared the note') {
                     setSharedWith([...sharedWith, { shared_with_email: form.values.recipient, editing_permission: allowEditChecked }]);
                     setIsShared(true);
-                    socket.emit('note_shared', { user_email: form.values.recipient, noteId: id });
+                    socket.emit('note_shared', { user_email: form.values.recipient, noteId: id, token: sessionStorage.getItem('jwt-token') });
                     form.reset();
                     setAllowEditChecked(false);
                 } else if (parsed === 'Updated existing permission') {
@@ -115,6 +115,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
                                 user_email: form.values.recipient,
                                 noteId: id,
                                 editing_permission: updatedPermission,
+                                token: sessionStorage.getItem('jwt-token'),
                             });
                             return updatedArray;
                         }
@@ -163,7 +164,7 @@ export default function ShareNote({ sharingNote, setSharingNote, id, setIsShared
             if (parsed === 'Failed to remove permissions') {
                 notifyError();
             } else {
-                socket.emit('share_removed', { user_email: email, noteId: id });
+                socket.emit('share_removed', { user_email: email, noteId: id, token: sessionStorage.getItem('jwt-token') });
                 setSharedWith((element) =>
                     element.filter((s) => {
                         return s.shared_with_email !== email;

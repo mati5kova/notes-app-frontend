@@ -112,7 +112,7 @@ export default function EditNote({
                         close();
                         form.setFieldError('attachments', 'File(s) too large (limit: 100MB)');
                     } else if (parsed.msg === 'Updated successfully') {
-                        socket.emit('note_updated', { noteId: id });
+                        socket.emit('note_updated', { noteId: id, token: sessionStorage.getItem('jwt-token') });
 
                         close();
                         handleModalClose();
@@ -122,7 +122,7 @@ export default function EditNote({
                         setSubject(parsed.updatedNote.subject);
                         setContent(parsed.updatedNote.content);
                         setAttachments(parsed.updatedNote.attachments);
-                        setShouldPulse(shared_by_email && shared_by_email == null ? 'temporary-gray' : 'temporary-blue');
+                        setShouldPulse(shared_by_email === null ? 'temporary-gray' : 'temporary-blue');
                         setSnote_version(parsed.updatedNote.note_version);
                     } else if (parsed === 'Error deleting file(s)') {
                         close();
