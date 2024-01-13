@@ -4,7 +4,7 @@
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-    max-height: 80px;
+    max-height: 5rem;
     transition: max-height 0.35s ease-in-out;
     overflow: hidden;
     cursor: initial;
@@ -21,8 +21,13 @@
     box-shadow: 0 0 5px #228be6;
 }
 .note-wrapper.is-shared-not-mine.pulsing-anim-blue {
-    animation: breatheShadow 2s infinite ease-in-out;
+    animation: breatheShadow 1.75s infinite ease-in-out;
 }
+
+.note-wrapper.pulsing-anim-blue-limited {
+    animation: breatheShadow 1.75s 1 ease-in-out;
+}
+
 .note-wrapper.pulsing-anim-gray-limited {
     animation: breatheShadowGray 1.75s 1 ease-in-out;
 }
@@ -99,7 +104,7 @@
 
 .last-update {
     font-size: 16px;
-    padding-top: 5px;
+    /* padding-top: 5px; */
 }
 
 .sharee-tools-row {
@@ -109,20 +114,27 @@
 
 .note-wrapper.opened-note {
     display: block;
-    max-height: 100vh;
+    max-height: 70vh; /* isto kot spodaj v calc */
+}
+.note-wrapper.opened-note.has-attachments {
+    height: auto;
+    max-height: calc(70vh + 10rem);
 }
 
 .note-content {
     margin-top: 0.75rem;
-    padding-top: 0.75rem;
+    padding-block: 0.75rem 0.75rem;
     border-top: 1px solid rgba(172, 171, 171, 0.3);
+    height: auto;
+    max-height: calc(70vh - 10rem);
+    overflow-y: auto;
 }
 
 .note-attachments {
     border-top: 1px solid rgba(172, 171, 171, 0.3);
     height: 40px;
     display: flex;
-    margin: 2rem 0 3rem 0;
+    margin: 0rem 0 3rem 0;
     padding-top: 0.75rem;
     width: 100%;
 }

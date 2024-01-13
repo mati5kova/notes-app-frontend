@@ -187,6 +187,7 @@ const Note = forwardRef(
                         editingNoteVersion={editingNoteVersion}
                         setSnote_version={setSnote_version}
                         Snote_version={Snote_version}
+                        shared_by_email={shared_by_email}
                     />
                 )}
 
@@ -200,6 +201,8 @@ const Note = forwardRef(
                             ? 'pulsing-anim-gray-limited'
                             : shouldPulse === 'always-gray'
                             ? 'pulsing-anim-gray'
+                            : shouldPulse === 'temporary-blue'
+                            ? 'pulsing-anim-blue-limited'
                             : ''
                     } ${Sattachments && Sattachments.length > 0 && 'has-attachments'}`}
                     ref={ref}

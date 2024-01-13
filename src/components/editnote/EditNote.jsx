@@ -32,6 +32,7 @@ export default function EditNote({
     setShouldPulse,
     editingNoteVersion,
     setSnote_version,
+    shared_by_email,
 }) {
     const [visible, { open, close }] = useDisclosure(false);
     const [maximized, setMaximized] = useState(false);
@@ -121,7 +122,7 @@ export default function EditNote({
                         setSubject(parsed.updatedNote.subject);
                         setContent(parsed.updatedNote.content);
                         setAttachments(parsed.updatedNote.attachments);
-                        setShouldPulse('temporary-gray');
+                        setShouldPulse(shared_by_email && shared_by_email == null ? 'temporary-gray' : 'temporary-blue');
                         setSnote_version(parsed.updatedNote.note_version);
                     } else if (parsed === 'Error deleting file(s)') {
                         close();
@@ -257,6 +258,7 @@ export default function EditNote({
                     <RichTextEditor
                         editor={editor}
                         style={{ height: `${rteHeight}`, bottom: '4rem' }}
+                        className={`${editingNote === true && 'editing'}`}
                         {...form.getInputProps('content')}
                         onClick={focusFunction}
                     >
