@@ -12,7 +12,7 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
 
     const notifyShareChange = (msg) => {
         toast.success(msg, {
-            autoClose: 5000,
+            autoClose: false,
             pauseOnHover: true,
             pauseOnFocusLoss: true,
         });
@@ -35,13 +35,12 @@ export default function Notes({ notes, setNotes, lastNoteElementRef }) {
 
             const handleNoteShared = async (noteId) => {
                 try {
-                    notifyShareChange('Note was shared with you!');
-
                     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/individual-note/${noteId}`, {
                         method: 'GET',
                         headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
                     });
                     if (response.ok) {
+                        notifyShareChange('Note was shared with you!');
                         const parsed = await response.json();
                         const updatedNote = { ...parsed[0], shouldAnimate: 'always-blue' };
                         setNotes((notes) => [updatedNote, ...notes]);

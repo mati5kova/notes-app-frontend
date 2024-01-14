@@ -87,6 +87,7 @@ export default function MainPage() {
         return () => {
             document.body.style.overflowY = 'scroll';
             document.body.style.position = 'static';
+            document.querySelector('.main-container').style.width = '100%';
         };
     }, [opened]);
 
@@ -94,29 +95,27 @@ export default function MainPage() {
         if (noMoreNotes) return;
         if (activeSearch) return;
         setLoading(true);
-        setTimeout(() => {
-            axios({
-                method: 'GET',
-                headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
-                url: `${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`,
+        axios({
+            method: 'GET',
+            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
+            url: `${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`,
+        })
+            .then(async (res) => {
+                if (res.data && res.data.length > 0) {
+                    setNotes([...notes, ...res.data]);
+                }
+                if (res.data.length != DEFAULT_LIMIT) {
+                    setNoMoreNotes(true);
+                }
+                setLoading(false);
+                setInitialLoading(false);
             })
-                .then(async (res) => {
-                    if (res.data && res.data.length > 0) {
-                        setNotes([...notes, ...res.data]);
-                    }
-                    if (res.data.length != DEFAULT_LIMIT) {
-                        setNoMoreNotes(true);
-                    }
-                    setLoading(false);
-                    setInitialLoading(false);
-                })
-                .catch((error) => {
-                    setLoading(false);
-                    if (import.meta.env.DEV) {
-                        console.log(error.message);
-                    }
-                });
-        }, 3000);
+            .catch((error) => {
+                setLoading(false);
+                if (import.meta.env.DEV) {
+                    console.log(error.message);
+                }
+            });
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNumber]);
