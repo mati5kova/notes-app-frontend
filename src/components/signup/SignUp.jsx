@@ -15,6 +15,7 @@ export default function SignUp() {
         if (isAuthenticated && isAuthenticated === true) {
             navigate('/', { replace: true });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isAuthenticated]);
 
     const notify = () => {
@@ -81,7 +82,7 @@ export default function SignUp() {
 
     return (
         <div className="signup-login-form-container">
-            <div onClick={() => navigate(-1)} style={{ textDecoration: 'underline', color: 'black', marginBottom: '1rem' }}>
+            <div onClick={() => navigate(-1)} style={{ textDecoration: 'underline', color: 'black', marginBottom: '1rem', cursor: 'pointer' }}>
                 {'< Back'}
             </div>
             <div className="signup-login-form">

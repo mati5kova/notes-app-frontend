@@ -81,7 +81,7 @@ export default function Login() {
     return (
         <>
             <div className="signup-login-form-container">
-                <div onClick={() => navigate(-1)} style={{ textDecoration: 'underline', color: 'black' }}>
+                <div onClick={() => navigate(-1)} style={{ textDecoration: 'underline', color: 'black', cursor: 'pointer' }}>
                     {'< Back'}
                 </div>
                 <div className="signup-login-form">

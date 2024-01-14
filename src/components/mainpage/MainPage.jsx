@@ -94,27 +94,29 @@ export default function MainPage() {
         if (noMoreNotes) return;
         if (activeSearch) return;
         setLoading(true);
-        axios({
-            method: 'GET',
-            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
-            url: `${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`,
-        })
-            .then(async (res) => {
-                if (res.data && res.data.length > 0) {
-                    setNotes([...notes, ...res.data]);
-                }
-                if (res.data.length != DEFAULT_LIMIT) {
-                    setNoMoreNotes(true);
-                }
-                setLoading(false);
-                setInitialLoading(false);
+        setTimeout(() => {
+            axios({
+                method: 'GET',
+                headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
+                url: `${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`,
             })
-            .catch((error) => {
-                setLoading(false);
-                if (import.meta.env.DEV) {
-                    console.log(error.message);
-                }
-            });
+                .then(async (res) => {
+                    if (res.data && res.data.length > 0) {
+                        setNotes([...notes, ...res.data]);
+                    }
+                    if (res.data.length != DEFAULT_LIMIT) {
+                        setNoMoreNotes(true);
+                    }
+                    setLoading(false);
+                    setInitialLoading(false);
+                })
+                .catch((error) => {
+                    setLoading(false);
+                    if (import.meta.env.DEV) {
+                        console.log(error.message);
+                    }
+                });
+        }, 3000);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNumber]);
@@ -142,7 +144,19 @@ export default function MainPage() {
                 setSearchTerm={setSearchTerm}
             />
             <div className="main-container">
-                <div className={`new-button-full-container ${notes.length === 0 && !loading && 'center'}`}>
+                <div
+                    className={`new-button-full-container ${
+                        !initialLoading && !loading && notes.length > 0
+                            ? 'top-right'
+                            : !initialLoading && !loading && notes.length === 0
+                            ? 'center'
+                            : isAuthenticated === false
+                            ? 'center'
+                            : loading || initialLoading
+                            ? 'top-right'
+                            : ''
+                    }`}
+                >
                     <Button rightSection={<IconPencilPlus stroke={2} width={18} />} pr={12} onClick={handleNewNoteClick}>
                         New note
                     </Button>
@@ -174,7 +188,7 @@ export default function MainPage() {
                 )}
 
                 {loading && !initialLoading && !noMoreNotes && !activeSearch && <span className="loader"></span>}
-                {loading && initialLoading && renderSkeletonLoaders()}
+                {isAuthenticated && loading && initialLoading && renderSkeletonLoaders()}
             </div>
         </main>
     );
