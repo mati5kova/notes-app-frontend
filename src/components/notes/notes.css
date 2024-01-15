@@ -2,7 +2,7 @@
     margin: 25px auto;
     padding: 0 20px 25px 20px;
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
     max-height: 5rem;
     transition: max-height 0.35s ease-in-out;
@@ -12,7 +12,6 @@
 .note-wrapper-skeleton {
     margin: 25px auto;
     background-color: #fff;
-    /* box-shadow: 0 0 5px rgb(140 140 140 / 60%); */
     border-radius: 5px;
     height: 80px;
 }
@@ -84,7 +83,6 @@
 
 .note-tools {
     cursor: pointer;
-    /* margin-top: 25px; */
     margin-bottom: 5px;
     display: flex;
     justify-content: flex-start;
@@ -104,7 +102,6 @@
 
 .last-update {
     font-size: 16px;
-    /* padding-top: 5px; */
 }
 
 .sharee-tools-row {
@@ -186,6 +183,7 @@
     }
     .note-title > h2 {
         font-size: 16px;
+        white-space: nowrap;
     }
     .note-content {
         line-height: 1.45;

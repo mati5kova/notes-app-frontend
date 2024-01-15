@@ -93,7 +93,7 @@ header.up {
         left: -0.5rem;
     }
     .filter-search {
-        width: 13rem;
+        width: calc(100% - 11.5rem);/* 13rem */
         right: 3.5rem;
     }
 
