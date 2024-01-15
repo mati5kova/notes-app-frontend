@@ -94,7 +94,6 @@ const Note = forwardRef(
             return () => {
                 document.body.style.overflowY = 'scroll';
                 document.body.style.position = 'static';
-                document.querySelector('.main-container').style.width = '100%';
             };
         }, [editingNote, sharingNote]);
 

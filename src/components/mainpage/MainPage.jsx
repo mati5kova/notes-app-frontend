@@ -1,7 +1,6 @@
 import { Button } from '@mantine/core';
 import { useWindowScroll } from '@mantine/hooks';
 import { IconPencilPlus } from '@tabler/icons-react';
-import axios from 'axios';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -57,25 +56,56 @@ export default function MainPage() {
         [loading]
     );
 
-    const notify = () => {
-        toast.error('You must login to create a note', {
+    const notify = (msg, closes) => {
+        toast.error(msg, {
             position: 'top-center',
-            autoClose: 3500,
-            hideProgressBar: false,
-            closeOnClick: true,
+            autoClose: closes === false ? false : 3500,
             pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
         });
     };
 
     const handleNewNoteClick = () => {
         if (!isAuthenticated) {
-            notify();
+            notify('You must login to create a note', true);
             return;
         }
         setOpened((opened) => !opened);
+    };
+
+    const fetchPaginatedNotes = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`, {
+                method: 'GET',
+                headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
+            });
+            if (response.ok) {
+                const parsedResponse = await response.json();
+
+                if (parsedResponse.length !== DEFAULT_LIMIT) {
+                    setNoMoreNotes(true);
+                }
+
+                setNotes([...notes, ...parsedResponse]);
+
+                setLoading(false);
+                setInitialLoading(false);
+            } else if (isAuthenticated === false) {
+                setLoading(false);
+            } else {
+                setLoading(false);
+                notify('There was an error fetching notes', false);
+                if (import.meta.env.DEV) {
+                    console.log('Error, response: ', response);
+                }
+            }
+        } catch (error) {
+            setLoading(false);
+            notify('There was an error fetching notes', false);
+            if (import.meta.env.DEV) {
+                console.log(error.message);
+            }
+        }
     };
 
     useEffect(() => {
@@ -87,35 +117,14 @@ export default function MainPage() {
         return () => {
             document.body.style.overflowY = 'scroll';
             document.body.style.position = 'static';
-            document.querySelector('.main-container').style.width = '100%';
         };
     }, [opened]);
 
     useEffect(() => {
         if (noMoreNotes) return;
         if (activeSearch) return;
-        setLoading(true);
-        axios({
-            method: 'GET',
-            headers: { 'jwt-token': sessionStorage.getItem('jwt-token') },
-            url: `${import.meta.env.VITE_API_BASE_URL}/notes/retrieve-all?page=${pageNumber}&limit=${DEFAULT_LIMIT}`,
-        })
-            .then(async (res) => {
-                if (res.data && res.data.length > 0) {
-                    setNotes([...notes, ...res.data]);
-                }
-                if (res.data.length != DEFAULT_LIMIT) {
-                    setNoMoreNotes(true);
-                }
-                setLoading(false);
-                setInitialLoading(false);
-            })
-            .catch((error) => {
-                setLoading(false);
-                if (import.meta.env.DEV) {
-                    console.log(error.message);
-                }
-            });
+
+        fetchPaginatedNotes();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNumber]);
