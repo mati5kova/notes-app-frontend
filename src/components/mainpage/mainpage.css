@@ -32,7 +32,6 @@
 
 .loader {
     position: absolute;
-    botom: 10px;
     left: 50%;
     transform: translateX(-50%);
 
