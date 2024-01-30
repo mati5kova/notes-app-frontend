@@ -101,7 +101,9 @@ export default function MainPage() {
             }
         } catch (error) {
             setLoading(false);
-            notify('There was an error fetching notes', false);
+            if (isAuthenticated !== false) {
+                notify('There was an error fetching notes', false);
+            }
             if (import.meta.env.DEV) {
                 console.log(error.message);
             }
