@@ -52,7 +52,7 @@ export default function SignUp() {
     });
 
     const handleSignupError = (msg) => {
-        form.setErrors({ email: 'User alerady exists' });
+        form.setErrors({ email: 'User already exists' });
     };
 
     const handleSignupSubmit = async (e) => {
@@ -65,7 +65,7 @@ export default function SignUp() {
 
             const parseRes = await response.json();
 
-            if (parseRes == 'User alerady exists') {
+            if (parseRes == 'User already exists') {
                 handleSignupError();
             } else {
                 sessionStorage.setItem('jwt-token', parseRes.token);
